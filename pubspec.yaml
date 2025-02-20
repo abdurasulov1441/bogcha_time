@@ -1,0 +1,62 @@
+name: bogcha_time
+description: "A new Flutter project."
+
+publish_to: 'none' 
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.0
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+  icons_launcher: ^3.0.0
+  firebase_core: ^3.11.0
+  shared_preferences: ^2.5.2
+  easy_localization: ^3.0.7+1
+  firebase_auth: ^5.4.2
+  go_router: ^14.8.0
+  email_validator: ^3.0.0
+  toastification: ^2.3.0
+  provider: ^6.1.2
+  cloud_firestore: ^5.6.3
+  flutter_svg: ^2.0.17
+  google_sign_in: ^6.2.2
+  firebase_messaging: ^15.2.3
+  flutter_local_notifications: ^18.0.1
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+icons_launcher:
+  image_path: "assets/images/logo.png"
+  platforms:
+    android:
+      enable: true
+    ios:
+      enable: true
+
+
+  flutter_lints: ^5.0.0
+
+flutter:
+
+
+  uses-material-design: true
+
+
+  assets:
+    - assets/fonts/
+    - assets/images/
+    - assets/icons/
+    - assets/translations/
+
+  fonts:
+    - family: Jost
+      fonts:
+        - asset: assets/fonts/Jost-Regular.ttf
+ 

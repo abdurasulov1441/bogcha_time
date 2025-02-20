@@ -1,0 +1,44 @@
+{
+  "language": "Русский",
+  "select_language": "Выберите язык",
+  "continue": "Продолжить",
+  "chosen_language": "Выбранный язык:",
+  
+
+  "welcome": "Добро пожаловать!",
+  "login": "Вход",
+  "dont_have_account": "Нет аккаунта?",
+  "registration": "Регистрация",
+  "have_account": "Есть аккаунт?",
+
+  "enter_pin_code": "Введите пин-код",
+  "confirm_pin_code": "Подтвердите пин-код",
+
+  "phone_verify": "Проверка номера",
+  "enter_sms": "Введите СМС",
+  "we_send_sms": "Мы вам отправили 6-значный код",
+  "resend_code": "Отправить код повторно",
+
+  "error": "Произошла ошибка!",
+  "error_conection": "Ошибка подключения",
+  "verification_succes": "Проверка прошла успешно.",
+  "error_token": "Ошибка: токены не получены.",
+  "enter_name": "Введите свое имя",
+  "enter_phone": "Введите номер телефона",
+  "enter_phone_format": "Введите формат телефона",
+  "enter_corectly_phone_format": "Введите правильный формат: +998 (XX) XXX XX XX.",
+  "phone_number": "Номер телефона (+998 XXX XXX XX XX)",
+
+  "enter_role": "Выберите свою роль",
+  "next": "Следующий",
+  "succes_send": "отправлено успешно",
+  "error_locations": " «Откуда» и «Куда» не должны совпадать.",
+  "enter_data": "Введите информацию",
+  "select_car_brand": "Выберите марку автомобиля",
+  "select_car_model": "Выберите модель автомобиля",
+  "car_number": "Номер автомобиля",
+  "select_from_location": "Выберите откуда отправляетесь",
+  "select_to_location": "Выберите куда отправляетесь",
+  "send": "Отправить"
+  
+}

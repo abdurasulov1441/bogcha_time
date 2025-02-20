@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "764533111731",
+    "project_id": "bogcha-time",
+    "storage_bucket": "bogcha-time.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:764533111731:android:8c349a8d7c93f5adb929c6",
+        "android_client_info": {
+          "package_name": "uz.bogcha.time"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFoN1ZGXU8vLm4kcLdUhIcUzflayB0HYc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
