@@ -67,11 +67,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 'name': user.displayName ?? '',
                 'email': user.email ?? '',
                 'photoUrl': user.photoURL ?? '',
+                'phone': user.phoneNumber ?? '',
                 'created_at': FieldValue.serverTimestamp(),
               });
         }
 
-        context.go(Routes.home);
+        context.go(Routes.firebaseStream);
       }
     } catch (e) {
       print('Ошибка входа через Google: $e');

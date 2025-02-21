@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="bogcha_time"
+        android:label="Bog'cha Time"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
