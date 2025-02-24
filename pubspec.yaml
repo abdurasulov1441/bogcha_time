@@ -28,6 +28,7 @@ dependencies:
   firebase_messaging: ^15.2.3
   flutter_local_notifications: ^18.0.1
   cupertino_icons: ^1.0.8
+  water_drop_nav_bar: ^2.2.2
 
 dev_dependencies:
   flutter_test:

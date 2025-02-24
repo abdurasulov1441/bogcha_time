@@ -1,17 +1,19 @@
-import 'package:bogcha_time/pages/garden/garden_home.dart';
-import 'package:bogcha_time/pages/parent/parent_home.dart';
+import 'package:bogcha_time/app/router.dart';
+import 'package:bogcha_time/pages/garden/garden_main.dart';
+import 'package:bogcha_time/pages/parent/parent_main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-class SelectRoleScreen extends StatefulWidget {
-  const SelectRoleScreen({super.key});
+class RoleSelectPage extends StatefulWidget {
+  const RoleSelectPage({super.key});
 
   @override
   _SelectRoleScreenState createState() => _SelectRoleScreenState();
 }
 
-class _SelectRoleScreenState extends State<SelectRoleScreen> {
+class _SelectRoleScreenState extends State<RoleSelectPage> {
   String? _selectedRole;
   bool _isLoading = false;
 
@@ -49,20 +51,14 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
           'createdAt': FieldValue.serverTimestamp(),
         });
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const ParentHome()),
-        );
+       context.go(Routes.parentsPage);
       } else if (_selectedRole == 'garden') {
         await _firestore.collection('garden').doc(uid).set({
           'role': 'garden',
           'createdAt': FieldValue.serverTimestamp(),
         });
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const GardenHome()),
-        );
+       context.go(Routes.gardenPage);
       }
     } catch (e) {
       debugPrint('Xatolik: $e');

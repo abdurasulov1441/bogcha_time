@@ -1,9 +1,8 @@
-import 'package:bogcha_time/pages/garden/garden_home.dart';
-import 'package:bogcha_time/pages/parent/parent_home.dart';
-import 'package:bogcha_time/pages/select_role/select_role.dart';
+import 'package:bogcha_time/app/router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,7 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _checkUserRole();
   }
 
-  /// **Проверяем, в какой коллекции есть пользователь**
   Future<void> _checkUserRole() async {
     final User? user = _auth.currentUser;
 
@@ -34,15 +32,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final String uid = user.uid;
 
     try {
-      // **Проверяем в коллекции `parents`**
       final parentsDoc = await _firestore.collection('parents').doc(uid).get();
 
       if (parentsDoc.exists) {
         _navigateToParentScreen();
         return;
       }
-
-      // **Проверяем в коллекции `garden`**
       final gardenDoc = await _firestore.collection('garden').doc(uid).get();
 
       if (gardenDoc.exists) {
@@ -50,7 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
         return;
       }
 
-      // **Если пользователь не найден, отправляем на выбор роли**
       _navigateToSelectRole();
     } catch (e) {
       debugPrint('Ошибка при проверке роли: $e');
@@ -58,29 +52,17 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  /// **Переход на экран родителя**
   void _navigateToParentScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const ParentHome()),
-    );
+ context.go(Routes.parentsPage);
   }
 
-  /// **Переход на экран детского сада**
   void _navigateToGardenScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const GardenHome()),
-    );
+  context.go(Routes.gardenPage);
   }
 
-  /// **Переход на экран выбора роли**
+  
   void _navigateToSelectRole() {
-    // **Переход на экран выбора роли** как класс
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const SelectRoleScreen()),
-    );
+    context.go(Routes.roleSelectPage);
   }
 
   @override

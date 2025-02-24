@@ -180,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         isHiddenPassword
                             ? Icons.visibility_off
                             : Icons.visibility,
-                        color: AppColors.fileTextColor,
+                        color: AppColors.defoltColor3,
                       ),
                       onPressed: togglePasswordView,
                     ),

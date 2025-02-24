@@ -12,7 +12,36 @@
           "package_name": "uz.bogcha.time"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "764533111731-6e3b1mk3u6l24adfjsr15b6q4ud7h5ua.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uz.bogcha.time",
+            "certificate_hash": "1668cb9546e3bc4200afbf3e59a259b2eeed3a71"
+          }
+        },
+        {
+          "client_id": "764533111731-8s8pqauau73eb4qe9h5i8uvsf7of4js7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uz.bogcha.time",
+            "certificate_hash": "bda2049693ca10bec51ab0564c0161d19e9f3006"
+          }
+        },
+        {
+          "client_id": "764533111731-jt2n9bmp3e684kh77ldvrlnkmoj3f2um.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uz.bogcha.time",
+            "certificate_hash": "0a402671df5a66edde8c98850f6c1549a3de70f5"
+          }
+        },
+        {
+          "client_id": "764533111731-maajhso2p8af93ho7enrb37v66joi613.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCFoN1ZGXU8vLm4kcLdUhIcUzflayB0HYc"
@@ -20,7 +49,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "764533111731-maajhso2p8af93ho7enrb37v66joi613.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "764533111731-gj3m1i389pee5u8k36ocn508eu50jdse.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bogchaTime"
+              }
+            }
+          ]
         }
       }
     }
