@@ -1,6 +1,4 @@
 import 'package:bogcha_time/app/router.dart';
-import 'package:bogcha_time/pages/garden/garden_main.dart';
-import 'package:bogcha_time/pages/parent/parent_main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

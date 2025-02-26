@@ -1,3 +1,4 @@
+import 'package:bogcha_time/common/style/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class NeumorphicButton extends StatelessWidget {
@@ -5,6 +6,7 @@ class NeumorphicButton extends StatelessWidget {
   final IconData? icon;
   final VoidCallback onPressed;
   final bool isIconOnly;
+  final bool isDisabled;
 
   const NeumorphicButton({
     super.key,
@@ -12,6 +14,7 @@ class NeumorphicButton extends StatelessWidget {
     required this.onPressed,
     this.icon,
     this.isIconOnly = false,
+    this.isDisabled = false,
   });
 
   @override
@@ -19,9 +22,10 @@ class NeumorphicButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
+        width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         decoration: BoxDecoration(
-          color: const Color(0xFFEBEEF9),
+          color: isDisabled ? AppColors.defoltColor1 : const Color(0xFFEBEEF9),
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             const BoxShadow(
@@ -37,12 +41,14 @@ class NeumorphicButton extends StatelessWidget {
           ],
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) Icon(icon, color: const Color(0xFF3D8D7A)),
             if (!isIconOnly) ...[
               const SizedBox(width: 10),
-              Text(text, style: const TextStyle(fontSize: 16, color: Color(0xFF3D8D7A))),
+              Text(text, style:  TextStyle(fontSize: 16, color: isDisabled ? AppColors.foregroundColor : const Color(0xFF3D8D7A))),
             ],
           ],
         ),

@@ -34,10 +34,8 @@ final lightTheme = ThemeData(
   ),
   colorScheme: ColorScheme.light(
     primary: MyColors.primary,
-    background: MyColors.backgroundLight,
     surface: MyColors.cardLight,
     onPrimary: Colors.white,
-    onBackground: MyColors.textLight,
     onSurface: MyColors.textLight,
   ),
   checkboxTheme: CheckboxThemeData(
@@ -68,10 +66,8 @@ final darkTheme = ThemeData(
   ),
   colorScheme: ColorScheme.dark(
     primary: MyColors.primary,
-    background: MyColors.backgroundDark,
     surface: MyColors.cardDark,
     onPrimary: Colors.white,
-    onBackground: MyColors.textDark,
     onSurface: MyColors.textDark,
   ),
   checkboxTheme: CheckboxThemeData(

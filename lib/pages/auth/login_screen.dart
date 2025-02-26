@@ -1,5 +1,11 @@
+import 'package:bogcha_time/common/language/language_select_page.dart';
+import 'package:bogcha_time/common/my_custom_widgets/my_custom_avatar.dart';
+import 'package:bogcha_time/common/my_custom_widgets/my_custom_button.dart';
+import 'package:bogcha_time/common/my_custom_widgets/my_custom_chekbox.dart';
+import 'package:bogcha_time/common/my_custom_widgets/my_custom_container.dart';
+import 'package:bogcha_time/common/my_custom_widgets/my_custom_textfield.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:email_validator/email_validator.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:bogcha_time/app/router.dart';
 import 'package:bogcha_time/common/style/app_colors.dart';
 import 'package:bogcha_time/common/style/app_style.dart';
@@ -76,7 +82,6 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       print('Ошибка входа через Google: $e');
-  
     }
   }
 
@@ -97,173 +102,163 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+  final String currentFlag = context.locale == const Locale('uz')
+    ? '🇺🇿'
+    : context.locale == const Locale('ru')
+        ? '🇷🇺'
+        : context.locale == const Locale('en')
+            ? '🇬🇧'
+            : '🇺🇿'; 
+
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 100),
-          child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: Image.asset(
-                      'assets/images/logo.jpg',
-                      width: 100,
-                      height: 100,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Center(
-                  child: Text(
-                    'Bog\'cha Time',
-                    style: AppStyle.fontStyle.copyWith(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Center(
-                  child: Text(
-                    'Tez, qulay, oson',
-                    style: AppStyle.fontStyle.copyWith(
-                      color: Colors.grey[500],
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30),
-                TextFormField(
-                  style: AppStyle.fontStyle,
-                  controller: emailTextInputController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: AppColors.foregroundColor,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none,
-                    ),
-                    hintText: 'Emailingizni kiriting',
-                    hintStyle: AppStyle.fontStyle.copyWith(
-                      color: Colors.grey[400],
-                    ),
-                  ),
-                  validator:
-                      (email) =>
-                          email != null && !EmailValidator.validate(email)
-                              ? 'To\'g\'ri email kiriting'
-                              : null,
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  style: AppStyle.fontStyle,
-                  controller: passwordTextInputController,
-                  obscureText: isHiddenPassword,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: AppColors.foregroundColor,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none,
-                    ),
-                    hintText: 'Parolingizni kiriting',
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        isHiddenPassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                        color: AppColors.defoltColor3,
-                      ),
-                      onPressed: togglePasswordView,
-                    ),
-                  ),
-                  validator:
-                      (value) =>
-                          value != null && value.length < 6
-                              ? 'Parol kamida 6 belgidan iborat bo\'lishi kerak'
-                              : null,
-                ),
-                const SizedBox(height: 20),
-                Center(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF4CAF50),
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                    onPressed: login,
-                    child: Text(
-                      'Kirish',
-                      style: AppStyle.fontStyle.copyWith(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                   Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(
-                      onPressed: () {
-                        context.push(Routes.resetPasswordPage);
-                      },
-                      child: Text(
-                        'Parolni unutdingizmi?',
-                        style: AppStyle.fontStyle.copyWith(),
+                    GestureDetector(
+                      onTap: () => showLanguageBottomSheet(context),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 25,
+                        child: Text(
+                          currentFlag,
+                          style: const TextStyle(fontSize: 24),
+                        ),
                       ),
                     ),
                   ],
                 ),
-                Center(
-                  child: TextButton(
-                    onPressed: () => context.push(Routes.signUpPage),
-                    child: Text(
-                      'Hisobingiz yo\'qmi? Ro\'yxatdan o\'ting',
-                      style: AppStyle.fontStyle.copyWith(),
+                  Center(
+                    
+                    child: NeumorphicAvatar(
+                      width: 100,
+                      height: 100,
+                      isAsset: true,
+                      imageUrl: "assets/images/logo.jpg",
                     ),
                   ),
-                ),
-                Container(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => signInWithGoogle(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(
+                 
+                  const SizedBox(height: 20),
+                  Center(
+                    child: Text(
+                      'Bog\'cha Time',
+                      style: AppStyle.fontStyle.copyWith(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Center(
+                    child: Text(
+                      'Tez, qulay, oson',
+                      style: AppStyle.fontStyle.copyWith(
+                        color: Colors.grey[500],
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  NeumorphicTextField(
+                    isEmailvalidator: true,
+                    controller: emailTextInputController,
+                    hintText: 'Emailingizni kiriting',
+                  ),
+                  const SizedBox(height: 20),
+                  NeumorphicTextField(
+                    isEmailvalidator: false,
+                    controller: passwordTextInputController,
+                    hintText: 'Parolingizni kiriting',
+                    isPassword: isHiddenPassword,
+                  ),
+
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Parolni ko\'rsatish',
+                        style: AppStyle.fontStyle.copyWith(),
+                      ),
+                      SizedBox(width: 10),
+                      NeumorphicCheckbox(
+                        value: !isHiddenPassword,
+                        onChanged: (value) {
+                          setState(() {
+                            isHiddenPassword = !value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  NeumorphicButton(
+                    isDisabled: false,
+                    text: "Kirish",
+                    onPressed: () => login(),
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          context.push(Routes.resetPasswordPage);
+                        },
+                        child: Text(
+                          'Parolni unutdingizmi?',
+                          style: AppStyle.fontStyle.copyWith(),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Center(
+                    child: TextButton(
+                      onPressed: () => context.push(Routes.signUpPage),
+                      child: Text(
+                        'Hisobingiz yo\'qmi? Ro\'yxatdan o\'ting',
+                        style: AppStyle.fontStyle.copyWith(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () => signInWithGoogle(context),
+                    child: NeumorphicContainer(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 20,
                         vertical: 10,
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                      width: double.infinity,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset('assets/images/google.png', height: 24),
+                          SizedBox(width: 10),
+                          Text(
+                            'Sign in with Google',
+                            style: AppStyle.fontStyle.copyWith(
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset('assets/images/google.png', height: 24),
-                        SizedBox(width: 10),
-                        Text(
-                          'Sign in with Google',
-                          style: AppStyle.fontStyle.copyWith(
-                            color: Colors.black,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

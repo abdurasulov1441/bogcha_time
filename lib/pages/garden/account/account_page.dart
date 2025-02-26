@@ -1,3 +1,4 @@
+import 'package:bogcha_time/common/style/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AccountGarden extends StatelessWidget {
@@ -5,6 +6,13 @@ class AccountGarden extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.backgroundColor,
+        title: Text('Account'),
+      ),
+      body: Column(children: [],)
+    );
   }
 }
