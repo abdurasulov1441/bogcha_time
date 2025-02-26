@@ -1,9 +1,9 @@
+import 'package:bogcha_time/common/style/app_colors.dart';
 import 'package:bogcha_time/pages/garden/account/account_page.dart';
 import 'package:bogcha_time/pages/garden/activities/activities.dart';
 import 'package:bogcha_time/pages/garden/food/eating.dart';
 import 'package:bogcha_time/pages/garden/home/garden.dart';
 import 'package:flutter/material.dart';
-import 'package:water_drop_nav_bar/water_drop_nav_bar.dart';
 
 class GardenPage extends StatefulWidget {
   const GardenPage({super.key});
@@ -22,7 +22,6 @@ class _GardenPageState extends State<GardenPage> {
     const AccountGarden(),
   ];
 
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -32,36 +31,40 @@ class _GardenPageState extends State<GardenPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      appBar: AppBar(title: const Text('Bog\'cha vaqtini boshqarish')),
-
+      backgroundColor: AppColors.backgroundColor,
       body: IndexedStack(
         index: _selectedIndex,
         children: _pages,
       ),
 
-      bottomNavigationBar: WaterDropNavBar(
-        iconSize: 3,
-        backgroundColor: Colors.white, 
-        waterDropColor: Colors.blue,
-        selectedIndex: _selectedIndex,
-        onItemSelected: _onItemTapped,
-        barItems:  [
-          BarItem(
-            filledIcon: Icons.home_rounded,
-            outlinedIcon: Icons.home_outlined,
+
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Colors.blue, 
+        unselectedItemColor: Colors.grey, 
+        showUnselectedLabels: true, 
+        type: BottomNavigationBarType.fixed, 
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home_rounded),
+            label: 'Home',
           ),
-          BarItem(
-            filledIcon: Icons.restaurant_rounded,
-            outlinedIcon: Icons.restaurant_menu_rounded,
+          BottomNavigationBarItem(
+            icon: Icon(Icons.restaurant_menu_rounded),
+            activeIcon: Icon(Icons.restaurant_rounded),
+            label: 'Eating',
           ),
-          BarItem(
-            filledIcon: Icons.photo_library_rounded,
-            outlinedIcon: Icons.photo_library_outlined,
+          BottomNavigationBarItem(
+            icon: Icon(Icons.photo_library_outlined),
+            activeIcon: Icon(Icons.photo_library_rounded),
+            label: 'Mashg‘ulotlar',
           ),
-          BarItem(
-            filledIcon: Icons.person_rounded,
-            outlinedIcon: Icons.person_outline_rounded,
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline_rounded),
+            activeIcon: Icon(Icons.person_rounded),
+            label: 'Account',
           ),
         ],
       ),

@@ -76,9 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       print('Ошибка входа через Google: $e');
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Ошибка: ${e.toString()}")));
+  
     }
   }
 
