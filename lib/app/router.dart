@@ -1,4 +1,5 @@
 import 'package:bogcha_time/common/services/firebase_streem.dart';
+import 'package:bogcha_time/main.dart';
 import 'package:bogcha_time/pages/auth/login_screen.dart';
 import 'package:bogcha_time/pages/auth/reset_password_screen.dart';
 import 'package:bogcha_time/pages/auth/signup_screen.dart';
@@ -9,34 +10,38 @@ import 'package:bogcha_time/pages/select_role/select_role.dart';
 import 'package:go_router/go_router.dart';
 
 abstract final class Routes {
-/////////////////////////////////////////////////////////////////////
-  static const firebaseStream = '/firebaseStream';
+  /////////////////////////////////////////////////////////////////////
   static const home = '/home';
   static const loginPage = '/loginPage';
-  static const resetPasswordPage = '/resetPasswordPage';
   static const signUpPage = '/signUpPage';
-  
-/////////////////////////////////////////////////////////////////////
+  static const resetPasswordPage = '/resetPasswordPage';
+
+  static const smsVerify = '/smsVerify';
+
+  /////////////////////////////////////////////////////////////////////
   static const roleSelectPage = '/roleSelectPage';
-/////////////////////////////////////////////////////////////////////
-///
+  /////////////////////////////////////////////////////////////////////
+
   static const gardenPage = '/gardenPage';
 
-/////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////
 
   static const parentsPage = '/parentsPage';
-
-
-  
-
-
-
-
-
 }
 
 String _initialLocation() {
-  return Routes.firebaseStream;
+  // return Routes.loginPage;
+  // final permission = cache.getBool("permission");
+  final userToken = cache.getString("user_token");
+
+  if (userToken != null) {
+    return Routes.home;
+  } else {
+    // if (permission == false || permission == null) {
+    //   return Routes.permissionPage;
+    // }
+    return Routes.loginPage;
+  }
 }
 
 Object? _initialExtra() {
@@ -48,9 +53,9 @@ final router = GoRouter(
   initialExtra: _initialExtra(),
   routes: [
     GoRoute(
-      path: Routes.firebaseStream,
+      path: Routes.home,
       builder: (context, state) {
-        return const FirebaseStream();
+        return HomeScreen();
       },
     ),
     GoRoute(
@@ -59,12 +64,13 @@ final router = GoRouter(
         return LoginScreen();
       },
     ),
-    GoRoute(
-      path: Routes.home,
-      builder: (context, state) {
-        return HomeScreen();
-      },
-    ),
+    // GoRoute(
+    //   path: Routes.smsVerify,
+    //   builder: (context, state) {
+    //     final phoneNumber = state.extra as String;
+    //     return VerificationScreen(phoneNumber: phoneNumber);
+    //   },
+    // ),
     GoRoute(
       path: Routes.resetPasswordPage,
       builder: (context, state) {
@@ -77,7 +83,7 @@ final router = GoRouter(
         return SignUpScreen();
       },
     ),
-     GoRoute(
+    GoRoute(
       path: Routes.roleSelectPage,
       builder: (context, state) {
         return RoleSelectPage();

@@ -2,9 +2,7 @@ import 'package:bogcha_time/common/language/language_select_page.dart';
 import 'package:bogcha_time/common/my_custom_widgets/my_custom_avatar.dart';
 import 'package:bogcha_time/common/my_custom_widgets/my_custom_button.dart';
 import 'package:bogcha_time/common/my_custom_widgets/my_custom_chekbox.dart';
-import 'package:bogcha_time/common/my_custom_widgets/my_custom_container.dart';
 import 'package:bogcha_time/common/my_custom_widgets/my_custom_textfield.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:bogcha_time/app/router.dart';
 import 'package:bogcha_time/common/style/app_colors.dart';
@@ -12,7 +10,6 @@ import 'package:bogcha_time/common/style/app_style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -26,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailTextInputController = TextEditingController();
   TextEditingController passwordTextInputController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+
 
   @override
   void dispose() {
@@ -41,49 +39,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  Future<void> signInWithGoogle(BuildContext context) async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return;
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithCredential(credential);
-      final User? user = userCredential.user;
-      if (user != null) {
-        final docSnapshot =
-            await FirebaseFirestore.instance
-                .collection('users')
-                .doc(user.uid)
-                .get();
-
-        if (!docSnapshot.exists) {
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .set({
-                'uid': user.uid,
-                'name': user.displayName ?? '',
-                'email': user.email ?? '',
-                'photoUrl': user.photoURL ?? '',
-                'phone': user.phoneNumber ?? '',
-                'created_at': FieldValue.serverTimestamp(),
-              });
-        }
-
-        context.go(Routes.firebaseStream);
-      }
-    } catch (e) {
-      print('Ошибка входа через Google: $e');
-    }
-  }
 
   Future<void> login() async {
     final isValid = formKey.currentState!.validate();
@@ -161,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 10),
                   Center(
                     child: Text(
-                      'Tez, qulay, oson',
+                      'slogan'.tr(),
                       style: AppStyle.fontStyle.copyWith(
                         color: Colors.grey[500],
                         fontSize: 16,
@@ -170,15 +125,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 10),
                   NeumorphicTextField(
-                    isEmailvalidator: true,
+                    keyBoardType: TextInputType.phone,
+                    isPhoneNumber: true,
                     controller: emailTextInputController,
-                    hintText: 'Emailingizni kiriting',
+                    hintText: 'enter_phone'.tr(),
+
                   ),
                   const SizedBox(height: 20),
                   NeumorphicTextField(
                     isEmailvalidator: false,
+                    isPhoneNumber: false,
                     controller: passwordTextInputController,
-                    hintText: 'Parolingizni kiriting',
+                    hintText: 'enter_password'.tr(),
                     isPassword: isHiddenPassword,
                   ),
 
@@ -187,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        'Parolni ko\'rsatish',
+                        'show_password'.tr(),
                         style: AppStyle.fontStyle.copyWith(),
                       ),
                       SizedBox(width: 10),
@@ -204,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 10),
                   NeumorphicButton(
                     isDisabled: false,
-                    text: "Kirish",
+                    text: "login".tr(),
                     onPressed: () => login(),
                   ),
 
@@ -216,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           context.push(Routes.resetPasswordPage);
                         },
                         child: Text(
-                          'Parolni unutdingizmi?',
+                          'forgot_password'.tr(),
                           style: AppStyle.fontStyle.copyWith(),
                         ),
                       ),
@@ -225,38 +183,26 @@ class _LoginScreenState extends State<LoginScreen> {
                   Center(
                     child: TextButton(
                       onPressed: () => context.push(Routes.signUpPage),
-                      child: Text(
-                        'Hisobingiz yo\'qmi? Ro\'yxatdan o\'ting',
-                        style: AppStyle.fontStyle.copyWith(),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  GestureDetector(
-                    onTap: () => signInWithGoogle(context),
-                    child: NeumorphicContainer(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 10,
-                      ),
-                      width: double.infinity,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Image.asset('assets/images/google.png', height: 24),
-                          SizedBox(width: 10),
                           Text(
-                            'Sign in with Google',
+                            'dont_have_account'.tr(),
+                            style: AppStyle.fontStyle.copyWith(),
+                          ),
+                          SizedBox(width: 10,),
+                          Text(
+                            'registration'.tr(),
                             style: AppStyle.fontStyle.copyWith(
-                              color: Colors.black,
-                              fontSize: 18,
+                             
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
+                  SizedBox(height: 20),
+                 
                 ],
               ),
             ),

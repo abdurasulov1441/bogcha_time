@@ -1,3 +1,6 @@
+import 'package:bogcha_time/common/my_custom_widgets/my_custom_container.dart';
+import 'package:bogcha_time/common/style/app_colors.dart';
+import 'package:bogcha_time/common/style/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -11,6 +14,7 @@ Future<void> showLanguageBottomSheet(BuildContext context) async {
   Locale? selectedLocale = context.locale;
 
   await showModalBottomSheet(
+    backgroundColor: AppColors.backgroundColor,
     context: context,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -21,9 +25,18 @@ Future<void> showLanguageBottomSheet(BuildContext context) async {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            SizedBox(height: 16),
+             Text(
               'Tilni tanlang',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: AppStyle.fontStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
             ).tr(),
             const SizedBox(height: 16),
             ListView.builder(
@@ -37,20 +50,12 @@ Future<void> showLanguageBottomSheet(BuildContext context) async {
                     context.setLocale(selectedLocale!);
                     Navigator.pop(context); // Закрытие боттом-шита
                   },
-                  child: Container(
+                  child: NeumorphicContainer(
                     margin: const EdgeInsets.symmetric(vertical: 8.0),
                     padding: const EdgeInsets.all(12.0),
-                    decoration: BoxDecoration(
-                      color: selectedLocale == lang['locale']
-                          ? Colors.blue.shade100
-                          : Colors.white,
-                      border: Border.all(
-                        color: selectedLocale == lang['locale']
-                            ? Colors.blue
-                            : Colors.grey,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    
+                     
+                   
                     child: Row(
                       children: [
                         ClipOval(

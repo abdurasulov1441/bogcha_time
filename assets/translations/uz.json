@@ -1,45 +1,41 @@
 {
-  "language": "O'zbek",
+  "language": "O'zbekcha",
   "select_language": "Tilni tanlang",
-  "continue": "Davom etish",
-  "chosen_language": "Tanlangan til:",
+  "continue": "Davom etish",  
 
   "welcome": "Xush kelibsiz!",
+  "slogan": "Tez, qulay, oson",
   "login": "Kirish",
   "dont_have_account": "Akkauntingiz yo'qmi?",
   "registration": "Ro'yxatdan o'tish",
   "have_account": "Akkauntingiz bormi?",
+  "enter_password": "Parolni kiriting",
+  "forgot_password": "Parolni unutdingizmi?",
+  "show_password": "Parolni ko'rsatish",
 
-  "enter_pin_code": "Pin kodni kiriting",
-  "confirm_pin_code": "Pin kodni tasdiqlang",
+  "enter_pin_code": "Pin-kodni kiriting",
+  "confirm_pin_code": "Pin-kodni tasdiqlang",
 
-  "phone_verify": "Raqamni tasdiqlash",
-  "enter_sms": "SMS ni kiriting",
-  "we_send_sms": "Biz sizga 6 tali raqam jo‘natdik",
-  "resend_code": "Kodni qaytadan jo'natish",
+  "phone_verify": "Telefon raqamni tasdiqlash",
+  "enter_sms": "SMSni kiriting",
+  "we_send_sms": "Biz sizga 6-raqamli kod yubordik",
+  "resend_code": "Kodni qayta yuborish",
 
   "error": "Xatolik yuz berdi!",
   "error_conection": "Ulanishda xatolik",
-  "verification_succes": "Tasdiqlash muvaffaqiyatli o’tdi.",
-  "error_token": "Xatolik: Tokenlar olinmadi.",
+  "verification_succes": "Tasdiqlash muvaffaqiyatli o'tdi.",
+  "error_token": "Xatolik: tokenlar olinmadi.",
   "enter_name": "Ismingizni kiriting",
   "enter_phone": "Telefon raqamni kiriting",
-  "enter_phone_format": "Telefon formatni kiriting",
-  "enter_corectly_phone_format": "To’g’ri formatni kiriting: +998 (XX) XXX XX XX",
-  "phone_number": "Telefon raqam (+998 XXX XXX XX XX)",
+  "enter_phone_format": "Telefon raqamini kiriting",
+  "enter_corectly_phone_format": "To'g'ri formatda kiriting: +998 (XX) XXX XX XX.",
+  "phone_number": "Telefon raqami (+998 XX XXX XX XX)",
 
-  "enter_role": "Rolingizni tanlang",
-  "next": "Keyingisi",
-  "succes_send": "muvaffaqiyatli jo'natildi",
-  "error_locations": "Qayerdan va Qayerga qatnashingiz birxil bo'lmasligi kerak",
+  "enter_role": "O'zingizning rol'ingizni tanlang",
+  "next": "Keyingi",
+  "succes_send": "muvaffaqiyatli yuborildi",
   "enter_data": "Ma'lumotlarni kiriting",
-  "select_car_brand": "Avtomobil brendini tanlang",
-  "select_car_model": "Avtomobil modelini tanlang",
-  "car_number": "Avtomobil raqami",
-  "select_from_location": "Qayerdan qatnashingizni tanlang",
-  "select_to_location": "Qayerga qatnashingizni tanlang",
-  "send": "Jo'natish"
-  
+  "send": "Yuborish"
 
 
 

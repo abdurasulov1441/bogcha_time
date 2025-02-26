@@ -1,15 +1,17 @@
 {
   "language": "Русский",
   "select_language": "Выберите язык",
-  "continue": "Продолжить",
-  "chosen_language": "Выбранный язык:",
-  
+  "continue": "Продолжить",  
 
   "welcome": "Добро пожаловать!",
+  "slogan": "Быстро, удобно, легко",
   "login": "Вход",
   "dont_have_account": "Нет аккаунта?",
   "registration": "Регистрация",
   "have_account": "Есть аккаунт?",
+  "enter_password": "Введите пароль",
+  "forgot_password": "Забыли пароль?",
+  "show_password": "Показать пароль",
 
   "enter_pin_code": "Введите пин-код",
   "confirm_pin_code": "Подтвердите пин-код",
@@ -32,13 +34,7 @@
   "enter_role": "Выберите свою роль",
   "next": "Следующий",
   "succes_send": "отправлено успешно",
-  "error_locations": " «Откуда» и «Куда» не должны совпадать.",
   "enter_data": "Введите информацию",
-  "select_car_brand": "Выберите марку автомобиля",
-  "select_car_model": "Выберите модель автомобиля",
-  "car_number": "Номер автомобиля",
-  "select_from_location": "Выберите откуда отправляетесь",
-  "select_to_location": "Выберите куда отправляетесь",
   "send": "Отправить"
   
 }

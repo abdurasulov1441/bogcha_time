@@ -57,7 +57,7 @@ class _SignUpScreen extends State<SignUpScreen> {
       }
     }
 
-    context.go(Routes.firebaseStream);
+    context.go(Routes.home);
   }
 
   @override
