@@ -13,6 +13,7 @@ class NeumorphicTextField extends StatefulWidget {
   final TextEditingController controller;
   final bool isEmailvalidator;
   final bool isPhoneNumber;
+  final bool isLogin;
   final keyBoardType;
 
 
@@ -23,6 +24,7 @@ class NeumorphicTextField extends StatefulWidget {
     this.isEmailvalidator = false,
     TextEditingController? controller,
     this.isPhoneNumber = false,
+    this.isLogin = false,
     this.keyBoardType,
   }) : controller = controller ?? TextEditingController();
 
@@ -108,7 +110,11 @@ final _phoneNumberFormatter = TextInputFormatter.withFunction(
                           .hasMatch(value!)) {
                         return 'enter_phone'.tr();
                       } 
-          if (!widget.isEmailvalidator) {
+                      if (widget.isLogin && value!.isEmpty) {
+            return 'enter_login'.tr();
+                        
+                      }
+          if (!widget.isEmailvalidator && !widget.isLogin) {
            return value != null && value.length < 6
                 ? 'Parol kamida 6 belgidan iborat bo\'lishi kerak'.tr()
                 : null;

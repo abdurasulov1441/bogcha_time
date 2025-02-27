@@ -29,6 +29,9 @@ dependencies:
   flutter_local_notifications: ^18.0.1
   cupertino_icons: ^1.0.8
   water_drop_nav_bar: ^2.2.2
+  permission_handler: ^11.4.0
+  qr_code_scanner_plus: ^2.0.10+1
+
 
 dev_dependencies:
   flutter_test:

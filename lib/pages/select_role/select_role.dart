@@ -1,114 +1,81 @@
 import 'package:bogcha_time/app/router.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:bogcha_time/common/style/app_colors.dart';
+import 'package:bogcha_time/common/style/app_style.dart';
 import 'package:go_router/go_router.dart';
 
-class RoleSelectPage extends StatefulWidget {
-  const RoleSelectPage({super.key});
+class RoleSelectionPage extends StatefulWidget {
+  const RoleSelectionPage({super.key});
 
   @override
-  _SelectRoleScreenState createState() => _SelectRoleScreenState();
+  _RoleSelectionPageState createState() => _RoleSelectionPageState();
 }
 
-class _SelectRoleScreenState extends State<RoleSelectPage> {
-  String? _selectedRole;
-  bool _isLoading = false;
+class _RoleSelectionPageState extends State<RoleSelectionPage> {
+  String? selectedRole;
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  /// **Функция сохранения роли в Firestore**
-  Future<void> _saveRoleAndProceed() async {
-    if (_selectedRole == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Iltimos, rol tanlang!')));
-      return;
-    }
-
+  void selectRole(String role) {
     setState(() {
-      _isLoading = true;
+      selectedRole = role;
     });
-
-    try {
-      final User? user = _auth.currentUser;
-
-      if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Foydalanuvchi topilmadi!')),
-        );
-        return;
-      }
-
-      final String uid = user.uid;
-
-      if (_selectedRole == 'parent') {
-        await _firestore.collection('parents').doc(uid).set({
-          'role': 'parent',
-          'createdAt': FieldValue.serverTimestamp(),
-        });
-
-       context.go(Routes.parentsPage);
-      } else if (_selectedRole == 'garden') {
-        await _firestore.collection('garden').doc(uid).set({
-          'role': 'garden',
-          'createdAt': FieldValue.serverTimestamp(),
-        });
-
-       context.go(Routes.gardenPage);
-      }
-    } catch (e) {
-      debugPrint('Xatolik: $e');
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Xatolik yuz berdi: $e')));
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Rolni tanlang')),
+      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        title: Text('Rolni tanlang', style: AppStyle.fontStyle.copyWith(fontSize: 20)),
+        centerTitle: true,
+        backgroundColor: AppColors.backgroundColor,
+        elevation: 0,
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "Iltimos, o'zingizning rolni tanlang:",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              'Siz kim sifatida tizimga kirasiz?',
+              style: AppStyle.fontStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.black45),
             ),
+            const SizedBox(height: 30),
+
+            /// **Кнопка "Родитель"**
+            _buildRoleButton('parent', 'Ota-ona', Icons.family_restroom),
             const SizedBox(height: 20),
 
-            /// **Выбор "Родитель"**
-            _buildRoleOption('Ota-Ona', 'parent'),
-
-            /// **Выбор "Детский сад"**
-            _buildRoleOption('Bog\'cha', 'garden'),
-
-            const Spacer(),
+            /// **Кнопка "Сотрудник"**
+            _buildRoleButton('staff', 'Bog‘cha hodimi', Icons.work),
+            const SizedBox(height: 40),
 
             /// **Кнопка "Далее"**
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _saveRoleAndProceed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
+            ElevatedButton(
+              onPressed: selectedRole != null
+                  ? () {
+                     if (selectedRole == 'parent') {
+                      context.go(Routes.linkChildPage);
+                    } else {
+                    context.go(Routes.loginPage);
+                    }
+                      print('Tanlangan rol: $selectedRole');
+                    }
+                  : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: selectedRole != null
+                    ? AppColors.defoltColor1
+                    : Colors.grey.shade400,
+                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child:
-                    _isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                          "Davom etish",
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
+              ),
+              child: Text(
+                'Davom etish',
+                style: AppStyle.fontStyle.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -117,38 +84,52 @@ class _SelectRoleScreenState extends State<RoleSelectPage> {
     );
   }
 
-  /// **Виджет выбора роли**
-  Widget _buildRoleOption(String title, String role) {
+  /// **Метод создания кнопки выбора роли**
+  Widget _buildRoleButton(String role, String text, IconData icon) {
+    final bool isSelected = selectedRole == role;
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedRole = role;
-        });
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        padding: const EdgeInsets.all(16),
+      onTap: () => selectRole(role),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color:
-              _selectedRole == role
-                  ? Colors.blue.withOpacity(0.2)
-                  : Colors.white,
-          border: Border.all(
-            color: _selectedRole == role ? Colors.blue : Colors.grey,
-            width: 2,
-          ),
-          borderRadius: BorderRadius.circular(10),
+          color: AppColors.backgroundColor,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColors.defoltColor1.withOpacity(0.6),
+                    offset: const Offset(3, 3),
+                    blurRadius: 8,
+                  ),
+                  const BoxShadow(
+                    color: Colors.white,
+                    offset: Offset(-3, -3),
+                    blurRadius: 8,
+                  ),
+                ]
+              : [
+                  const BoxShadow(
+                    color: Colors.white,
+                    offset: Offset(-3, -3),
+                    blurRadius: 5,
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    offset: const Offset(3, 3),
+                    blurRadius: 5,
+                  ),
+                ],
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(
-              _selectedRole == role
-                  ? Icons.check_circle
-                  : Icons.radio_button_unchecked,
-              color: _selectedRole == role ? Colors.blue : Colors.grey,
+            Icon(icon, size: 30, color: isSelected ? AppColors.defoltColor1 : Colors.black45),
+            const SizedBox(width: 15),
+            Text(
+              text,
+              style: AppStyle.fontStyle.copyWith(fontSize: 18,color: isSelected ? AppColors.defoltColor1 : Colors.black45),
             ),
-            const SizedBox(width: 10),
-            Text(title, style: const TextStyle(fontSize: 16)),
           ],
         ),
       ),

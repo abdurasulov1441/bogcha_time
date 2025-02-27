@@ -43,7 +43,7 @@ class _AppState extends State<App> {
       String? token = await messaging.getToken();
       debugPrint("FCM Token: $token");
 
-      cache.setString('fcm_token', '$token'); // Tokenni cache'ga saqlaymiz
+      cache.setString('fcm_token', '$token'); 
 
       setState(() {});
 

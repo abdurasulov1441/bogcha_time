@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bogcha_time/common/language/language_select_page.dart';
 import 'package:bogcha_time/common/my_custom_widgets/my_custom_avatar.dart';
 import 'package:bogcha_time/common/my_custom_widgets/my_custom_button.dart';
@@ -44,15 +46,13 @@ class _LoginScreenState extends State<LoginScreen> {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
 
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailTextInputController.text.trim(),
-        password: passwordTextInputController.text.trim(),
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-      } else {}
-    }
+    if (emailTextInputController.text =="admin" &&
+          passwordTextInputController.text =="123456") {
+ context.go(Routes.gardenPage);
+        return;
+        
+      }
+    else{print("error");}
   }
 
   @override
@@ -77,6 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: 20),
                    Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -93,6 +94,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
+                SizedBox(height: 20),
+
                   Center(
                     
                     child: NeumorphicAvatar(
@@ -125,10 +128,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 10),
                   NeumorphicTextField(
-                    keyBoardType: TextInputType.phone,
-                    isPhoneNumber: true,
+                    isLogin: true,
+                    isPhoneNumber: false,
                     controller: emailTextInputController,
-                    hintText: 'enter_phone'.tr(),
+                    hintText: 'enter_login'.tr(),
 
                   ),
                   const SizedBox(height: 20),
@@ -180,27 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
-                  Center(
-                    child: TextButton(
-                      onPressed: () => context.push(Routes.signUpPage),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'dont_have_account'.tr(),
-                            style: AppStyle.fontStyle.copyWith(),
-                          ),
-                          SizedBox(width: 10,),
-                          Text(
-                            'registration'.tr(),
-                            style: AppStyle.fontStyle.copyWith(
-                             
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                 
                   SizedBox(height: 20),
                  
                 ],

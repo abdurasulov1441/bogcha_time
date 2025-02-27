@@ -29,7 +29,7 @@ Future<void> showLanguageBottomSheet(BuildContext context) async {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
+                color: AppColors.backgroundColor,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -40,6 +40,7 @@ Future<void> showLanguageBottomSheet(BuildContext context) async {
             ).tr(),
             const SizedBox(height: 16),
             ListView.builder(
+              
               shrinkWrap: true,
               itemCount: languages.length,
               itemBuilder: (context, index) {
@@ -48,9 +49,10 @@ Future<void> showLanguageBottomSheet(BuildContext context) async {
                   onTap: () {
                     selectedLocale = lang['locale'];
                     context.setLocale(selectedLocale!);
-                    Navigator.pop(context); // Закрытие боттом-шита
+                    Navigator.pop(context); 
                   },
                   child: NeumorphicContainer(
+                    
                     margin: const EdgeInsets.symmetric(vertical: 8.0),
                     padding: const EdgeInsets.all(12.0),
                     
@@ -60,7 +62,7 @@ Future<void> showLanguageBottomSheet(BuildContext context) async {
                       children: [
                         ClipOval(
                           child: Container(
-                            color: Colors.grey.shade200,
+                            color: AppColors.backgroundColor,
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               lang['flag'],
@@ -71,7 +73,7 @@ Future<void> showLanguageBottomSheet(BuildContext context) async {
                         const SizedBox(width: 16),
                         Text(
                           lang['name'],
-                          style: TextStyle(
+                          style: AppStyle.fontStyle.copyWith(
                             color: selectedLocale == lang['locale']
                                 ? Colors.blue
                                 : Colors.black,

@@ -1,11 +1,11 @@
-import 'package:bogcha_time/common/services/firebase_streem.dart';
 import 'package:bogcha_time/main.dart';
 import 'package:bogcha_time/pages/auth/login_screen.dart';
-import 'package:bogcha_time/pages/auth/reset_password_screen.dart';
-import 'package:bogcha_time/pages/auth/signup_screen.dart';
 import 'package:bogcha_time/pages/garden/garden_main.dart';
 import 'package:bogcha_time/pages/home_screen.dart';
 import 'package:bogcha_time/pages/parent/parent_main.dart';
+import 'package:bogcha_time/pages/select_role/instruction.dart';
+import 'package:bogcha_time/pages/select_role/link_child_page.dart';
+import 'package:bogcha_time/pages/select_role/qr_code.dart';
 import 'package:bogcha_time/pages/select_role/select_role.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,8 +13,12 @@ abstract final class Routes {
   /////////////////////////////////////////////////////////////////////
   static const home = '/home';
   static const loginPage = '/loginPage';
-  static const signUpPage = '/signUpPage';
   static const resetPasswordPage = '/resetPasswordPage';
+
+  static const linkChildPage = '/linkChildPage';
+  static const qrCodePage = '/qrCodePage';
+  static const qrInstruction = '/qrInstruction';
+
 
   static const smsVerify = '/smsVerify';
 
@@ -40,7 +44,7 @@ String _initialLocation() {
     // if (permission == false || permission == null) {
     //   return Routes.permissionPage;
     // }
-    return Routes.loginPage;
+    return Routes.roleSelectPage;
   }
 }
 
@@ -64,29 +68,28 @@ final router = GoRouter(
         return LoginScreen();
       },
     ),
-    // GoRoute(
-    //   path: Routes.smsVerify,
-    //   builder: (context, state) {
-    //     final phoneNumber = state.extra as String;
-    //     return VerificationScreen(phoneNumber: phoneNumber);
-    //   },
-    // ),
-    GoRoute(
-      path: Routes.resetPasswordPage,
-      builder: (context, state) {
-        return ResetPasswordScreen();
-      },
-    ),
-    GoRoute(
-      path: Routes.signUpPage,
-      builder: (context, state) {
-        return SignUpScreen();
-      },
-    ),
     GoRoute(
       path: Routes.roleSelectPage,
       builder: (context, state) {
-        return RoleSelectPage();
+        return RoleSelectionPage();
+      },
+    ),
+    GoRoute(
+      path: Routes.linkChildPage,
+      builder: (context, state) {
+        return LinkChildPage();
+      },
+    ),
+     GoRoute(
+      path: Routes.qrCodePage,
+      builder: (context, state) {
+        return QRScanScreen();
+      },
+    ),
+    GoRoute(
+      path: Routes.qrInstruction,
+      builder: (context, state) {
+        return ChildCodeInstructions();
       },
     ),
     GoRoute(
