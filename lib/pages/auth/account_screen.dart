@@ -1,3 +1,4 @@
+import 'package:bogcha_time/app/router.dart';
 import 'package:bogcha_time/common/style/app_colors.dart';
 import 'package:bogcha_time/common/style/app_style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,11 +16,13 @@ class _AccountScreenState extends State<AccountScreen> {
   final user = FirebaseAuth.instance.currentUser;
 
   Future<void> signOut() async {
-    final navigator = Navigator.of(context);
+  
 
     await FirebaseAuth.instance.signOut();
 
-    navigator.pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+   context.go(Routes.firebaseStream);
+
+  
   }
 
   @override

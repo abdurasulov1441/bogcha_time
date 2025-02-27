@@ -1,3 +1,4 @@
+import 'package:bogcha_time/common/style/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class NeumorphicAvatar extends StatelessWidget {
@@ -17,10 +18,11 @@ class NeumorphicAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      
       width: width ?? 60,
       height: height ?? 60,
       decoration: BoxDecoration(
-        color: const Color(0xFFEBEEF9),
+        color: AppColors.backgroundColor,
         shape: BoxShape.circle,
         boxShadow: [
           const BoxShadow(
@@ -35,6 +37,7 @@ class NeumorphicAvatar extends StatelessWidget {
           ),
         ],
         image: DecorationImage(
+          
           image: isAsset ? AssetImage(imageUrl) : NetworkImage(imageUrl),
           fit: BoxFit.cover,
         ),

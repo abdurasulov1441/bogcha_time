@@ -18,7 +18,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _checkUserRole();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkUserRole();
+    });
   }
 
   Future<void> _checkUserRole() async {
@@ -32,12 +34,19 @@ class _HomeScreenState extends State<HomeScreen> {
     final String uid = user.uid;
 
     try {
-      final parentsDoc = await _firestore.collection('parents').doc(uid).get();
+      // 🔹 1️⃣ Ota-onani farzand orqali tekshiramiz
+      final childrenQuery = await _firestore
+          .collection('children')
+          .where('parent_id', isEqualTo: uid)
+          .limit(1)
+          .get();
 
-      if (parentsDoc.exists) {
+      if (childrenQuery.docs.isNotEmpty) {
         _navigateToParentScreen();
         return;
       }
+
+  
       final gardenDoc = await _firestore.collection('garden').doc(uid).get();
 
       if (gardenDoc.exists) {
@@ -45,28 +54,34 @@ class _HomeScreenState extends State<HomeScreen> {
         return;
       }
 
-      _navigateToSelectRole();
+
+      _navigateToQRScan();
     } catch (e) {
-      debugPrint('Ошибка при проверке роли: $e');
+      debugPrint('❌ Xatolik yuz berdi: $e');
       _navigateToSelectRole();
     }
   }
 
   void _navigateToParentScreen() {
- context.go(Routes.parentsPage);
+    if (mounted) context.go(Routes.parentsPage);
   }
 
   void _navigateToGardenScreen() {
-  context.go(Routes.gardenPage);
+    if (mounted) context.go(Routes.gardenPage);
   }
 
-  
+  void _navigateToQRScan() {
+    if (mounted) context.go(Routes.qrCodePage);
+  }
+
   void _navigateToSelectRole() {
-    context.go(Routes.roleSelectPage);
+    if (mounted) context.go(Routes.roleSelectPage);
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
+    );
   }
 }

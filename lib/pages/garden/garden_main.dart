@@ -1,6 +1,6 @@
 import 'package:bogcha_time/common/style/app_colors.dart';
-import 'package:bogcha_time/pages/garden/account/account_page.dart';
-import 'package:bogcha_time/pages/garden/activities/activities.dart';
+import 'package:bogcha_time/pages/auth/account_screen.dart';
+import 'package:bogcha_time/pages/garden/children/groups_page.dart';
 import 'package:bogcha_time/pages/garden/food/eating.dart';
 import 'package:bogcha_time/pages/garden/home/garden.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +18,8 @@ class _GardenPageState extends State<GardenPage> {
   final List<Widget> _pages = [
     const HomeGarden(),
     const EatingGarden(),
-    const ActivitiesGarden(),
-    const AccountGarden(),
+    const GroupsPage(),
+    const AccountScreen(),
   ];
 
   void _onItemTapped(int index) {

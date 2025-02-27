@@ -56,7 +56,7 @@ class _LinkChildPageState extends State<LinkChildPage> {
           return;
         }
 
-        String parentId = "parent_123"; // 🔹 Здесь берем текущий ID родителя (замени на auth)
+        String parentId = "parent_123"; 
         await childDoc.reference.update({'parent_id': parentId});
 
         ScaffoldMessenger.of(context).showSnackBar(

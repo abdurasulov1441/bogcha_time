@@ -1,6 +1,8 @@
+import 'package:bogcha_time/app/router.dart';
 import 'package:bogcha_time/common/style/app_colors.dart';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeGarden extends StatelessWidget {
   const HomeGarden({super.key});
@@ -17,7 +19,7 @@ class HomeGarden extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-         
+        
             SizedBox(height: 30),
           
             SizedBox(height: 30),

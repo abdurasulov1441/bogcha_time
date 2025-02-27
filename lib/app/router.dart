@@ -1,6 +1,7 @@
-import 'package:bogcha_time/main.dart';
+import 'package:bogcha_time/firebase_stream.dart';
 import 'package:bogcha_time/pages/auth/login_screen.dart';
 import 'package:bogcha_time/pages/garden/garden_main.dart';
+import 'package:bogcha_time/pages/garden/children/add_child.dart';
 import 'package:bogcha_time/pages/home_screen.dart';
 import 'package:bogcha_time/pages/parent/parent_main.dart';
 import 'package:bogcha_time/pages/select_role/instruction.dart';
@@ -12,6 +13,7 @@ import 'package:go_router/go_router.dart';
 abstract final class Routes {
   /////////////////////////////////////////////////////////////////////
   static const home = '/home';
+  static const firebaseStream = '/firebaseStream';
   static const loginPage = '/loginPage';
   static const resetPasswordPage = '/resetPasswordPage';
 
@@ -28,24 +30,14 @@ abstract final class Routes {
 
   static const gardenPage = '/gardenPage';
 
+
   /////////////////////////////////////////////////////////////////////
 
   static const parentsPage = '/parentsPage';
 }
 
 String _initialLocation() {
-  // return Routes.loginPage;
-  // final permission = cache.getBool("permission");
-  final userToken = cache.getString("user_token");
-
-  if (userToken != null) {
-    return Routes.home;
-  } else {
-    // if (permission == false || permission == null) {
-    //   return Routes.permissionPage;
-    // }
-    return Routes.roleSelectPage;
-  }
+  return Routes.firebaseStream;
 }
 
 Object? _initialExtra() {
@@ -66,6 +58,12 @@ final router = GoRouter(
       path: Routes.loginPage,
       builder: (context, state) {
         return LoginScreen();
+      },
+    ),
+     GoRoute(
+      path: Routes.firebaseStream,
+      builder: (context, state) {
+        return FirebaseStream();
       },
     ),
     GoRoute(
@@ -98,6 +96,7 @@ final router = GoRouter(
         return GardenPage();
       },
     ),
+    
     GoRoute(
       path: Routes.parentsPage,
       builder: (context, state) {
