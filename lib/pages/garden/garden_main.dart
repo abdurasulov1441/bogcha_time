@@ -1,5 +1,5 @@
 import 'package:bogcha_time/common/style/app_colors.dart';
-import 'package:bogcha_time/pages/auth/account_screen.dart';
+import 'package:bogcha_time/pages/garden/account/account_screen.dart';
 import 'package:bogcha_time/pages/garden/activities/activities.dart';
 import 'package:bogcha_time/pages/garden/groups/groups_page.dart';
 import 'package:bogcha_time/pages/garden/food/eating.dart';

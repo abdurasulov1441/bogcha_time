@@ -4,8 +4,11 @@ import 'package:bogcha_time/common/style/app_colors.dart';
 import 'package:bogcha_time/common/style/app_style.dart';
 import 'package:bogcha_time/app/router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class LinkChildPage extends StatefulWidget {
   const LinkChildPage({super.key});
@@ -25,11 +28,10 @@ class _LinkChildPageState extends State<LinkChildPage> {
     super.dispose();
   }
 
-  /// 🔹 Функция для привязки ребенка по коду
   Future<void> _linkChild(String code) async {
     if (code.isEmpty) {
       setState(() {
-        _errorMessage = 'Введите код!';
+        _errorMessage = 'Kodni kiriting!';
       });
       return;
     }
@@ -40,37 +42,89 @@ class _LinkChildPageState extends State<LinkChildPage> {
     });
 
     try {
-      var childSnapshot = await FirebaseFirestore.instance
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+      // 🔹 Найти детский сад, в котором зарегистрирован ребенок
+      QuerySnapshot gardenQuery = await firestore
+          .collection('garden')
+          .where('children', arrayContains: code)
+          .limit(1)
+          .get();
+
+      if (gardenQuery.docs.isEmpty) {
+        setState(() {
+          _errorMessage = '❌ Xatolik: Bog‘cha ID’si topilmadi! Admin bilan bog‘laning.';
+        });
+        return;
+      }
+
+      DocumentSnapshot gardenDoc = gardenQuery.docs.first;
+      String gardenId = gardenDoc.id;
+
+      // 🔹 Найти ребенка в этом садике
+      QuerySnapshot childQuery = await firestore
+          .collection('garden')
+          .doc(gardenId)
           .collection('children')
           .where('unique_code', isEqualTo: code)
           .limit(1)
           .get();
 
-      if (childSnapshot.docs.isNotEmpty) {
-        var childDoc = childSnapshot.docs.first;
-
-        if (childDoc['parent_id'] != null) {
-          setState(() {
-            _errorMessage = 'Этот ребенок уже привязан к другому родителю!';
-          });
-          return;
-        }
-
-        String parentId = "parent_123"; 
-        await childDoc.reference.update({'parent_id': parentId});
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ребенок успешно привязан!')),
-        );
-        Navigator.pop(context);
-      } else {
+      if (childQuery.docs.isEmpty) {
         setState(() {
-          _errorMessage = 'Код не найден, попробуйте еще раз!';
+          _errorMessage = '❌ Xatolik: Bola topilmadi! QR kodni tekshiring.';
+        });
+        return;
+      }
+
+      DocumentSnapshot childDoc = childQuery.docs.first;
+      Map<String, dynamic> childData = childDoc.data() as Map<String, dynamic>;
+      String childId = childDoc.id;
+      String? parentId = childData['parent_id'];
+
+      // 🔹 Генерация FCM-токена
+      String? fcmToken = await messaging.getToken();
+
+      if (parentId == null) {
+        // ✅ Если у ребенка нет родителя, создаем нового
+        parentId = const Uuid().v4();
+
+        await firestore.collection('parents').doc(parentId).set({
+          'parent_id': parentId,
+          'parent_name': "Ismingizni kiriting",
+          'parent_surname': "Familiyangizni kiriting",
+          'parent_phone': "Telefon raqam",
+          'fcm_token': fcmToken,
+          'linked_children': [childId],
+          'created_at': FieldValue.serverTimestamp(),
+        });
+
+        // 🔹 Обновляем `parent_id` у ребенка
+        await childDoc.reference.update({'parent_id': parentId});
+      } else {
+        // ✅ Если `parent_id` уже есть, добавляем ребенка в `linked_children`
+        DocumentReference parentRef = firestore.collection('parents').doc(parentId);
+        await parentRef.update({
+          'linked_children': FieldValue.arrayUnion([childId]),
         });
       }
+
+      // 🔹 Сохраняем `parent_id`, `child_id`, `garden_id` в кеш
+      await prefs.setString('parent_id', parentId);
+      await prefs.setString('child_id', childId);
+      await prefs.setString('garden_id', gardenId);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("✅ Bola muvaffaqiyatli bog‘landi!")),
+      );
+
+      // ✅ Перенаправляем в кабинет родителя
+      context.go(Routes.parentsPage);
     } catch (e) {
       setState(() {
-        _errorMessage = 'Ошибка: $e';
+        _errorMessage = '❌ Xatolik: $e';
       });
     } finally {
       setState(() {
@@ -86,7 +140,10 @@ class _LinkChildPageState extends State<LinkChildPage> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: AppColors.backgroundColor,
-        title: Text('Привязка ребенка', style: AppStyle.fontStyle.copyWith(fontSize: 20)),
+        title: Text(
+          'Bola bog‘lash',
+          style: AppStyle.fontStyle.copyWith(fontSize: 20),
+        ),
         elevation: 0,
       ),
       body: Padding(
@@ -95,61 +152,40 @@ class _LinkChildPageState extends State<LinkChildPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 10),
-
-           
             Center(
               child: Text(
-                'Введите код или отсканируйте QR-код',
-                style: AppStyle.fontStyle.copyWith(fontSize: 18,),
+                'Kod kiriting yoki QR kodni skaner qiling',
+                style: AppStyle.fontStyle.copyWith(fontSize: 18),
                 textAlign: TextAlign.center,
               ),
             ),
-
             const SizedBox(height: 30),
-
-            /// 🔹 Неоморфное поле ввода кода
             NeumorphicTextField(
               controller: _codeController,
-              hintText: 'Введите код',
-              isEmailvalidator: false,
+              hintText: 'Kod kiriting',
             ),
-
             const SizedBox(height: 20),
-
-            /// 🔹 Кнопка "Привязать ребенка"
             NeumorphicButton(
-              text: "Привязать ребенка",
+              text: "Bola bog‘lash",
               isDisabled: _isLoading,
               onPressed: () => _linkChild(_codeController.text.trim()),
             ),
-
-            if (_errorMessage.isNotEmpty) ...[
-              const SizedBox(height: 10),
-              Center(
-                child: Text(
-                  _errorMessage,
-                  style: TextStyle(color: Colors.red, fontSize: 14),
+            if (_isLoading) const Center(child: CircularProgressIndicator()),
+            if (_errorMessage.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Center(
+                  child: Text(
+                    _errorMessage,
+                    style: const TextStyle(color: Colors.red),
+                  ),
                 ),
               ),
-            ],
-
-            const SizedBox(height: 30),
-            const Divider(),
-            const SizedBox(height: 10),
-
-           
+            const Spacer(),
             NeumorphicButton(
-              text: "📷 Сканировать QR-код",
+              text: "📷 QR kodni skaner qilish",
               onPressed: () => context.push(Routes.qrCodePage),
             ),
-
-            const SizedBox(height: 10),
-            Spacer(),
-            NeumorphicButton(
-              
-              text: 'Подробраня инструкция', onPressed: () {
-              context.push(Routes.qrInstruction);
-            }),
           ],
         ),
       ),

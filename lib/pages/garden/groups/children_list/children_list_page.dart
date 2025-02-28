@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bogcha_time/app/router.dart';
 import 'package:bogcha_time/common/my_custom_widgets/my_custom_container.dart';
 import 'package:bogcha_time/common/style/app_colors.dart';
@@ -127,7 +129,8 @@ class ChildrenListPage extends StatelessWidget {
                         ),
                         onSelected: (value) {
                           if (value == "qr") {
-                            _showQRCode(context, doc['unique_code']);
+                          _showQRCode(context, FirebaseAuth.instance.currentUser?.uid ?? "", doc['unique_code']);
+
                           } else if (value == "info") {
                             _showChildDetails(context, doc);
                           } else if (value == "change_group") {
@@ -198,51 +201,62 @@ class ChildrenListPage extends StatelessWidget {
     );
   }
 
-  void _showQRCode(BuildContext context, String uniqueCode) {
-    showModalBottomSheet(
-      backgroundColor: AppColors.backgroundColor,
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                "QR-код для ребенка",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              Container(
-                width: 200,
-                height: 200,
-                child: PrettyQrView.data(
-                  data: uniqueCode,
-                  errorCorrectLevel: QrErrorCorrectLevel.H,
-                  decoration: const PrettyQrDecoration(
-                    shape: PrettyQrSmoothSymbol(color: Colors.black),
-                  ),
+ void _showQRCode(BuildContext context, String gardenId, String uniqueCode) {
+  // ✅ Формируем JSON-объект с `garden_id` и `unique_code`
+  String qrData = jsonEncode({
+    "garden_id": gardenId,
+    "unique_code": uniqueCode,
+  });
+
+  showModalBottomSheet(
+    backgroundColor: AppColors.backgroundColor,
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "QR-kod bolaga",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+
+            // ✅ Генерация QR-кода с JSON-данными
+            Container(
+              width: 200,
+              height: 200,
+              child: PrettyQrView.data(
+                data: qrData, // Передаем JSON-строку
+                errorCorrectLevel: QrErrorCorrectLevel.H,
+                decoration: const PrettyQrDecoration(
+                  shape: PrettyQrSmoothSymbol(color: Colors.black),
                 ),
               ),
-              const SizedBox(height: 10),
-              SelectableText(
-                uniqueCode,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+            ),
+
+            const SizedBox(height: 10),
+
+            // ✅ Отображение JSON-строки для проверки
+            SelectableText(
+              qrData,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 20),
-            ],
-          ),
-        );
-      },
-    );
-  }
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      );
+    },
+  );
+}
 
   void _showChildDetails(BuildContext context, DocumentSnapshot child) {
     final String? gardenId = FirebaseAuth.instance.currentUser?.uid;
@@ -302,17 +316,17 @@ class ChildrenListPage extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () {
                           context.pop();
-                      context.push(
-  Routes.editChildPage,
-  extra: {
-    'childId': child.id,
-    'childData': {
-      ...child.data() as Map<String, dynamic>,
-      'garden_id': FirebaseAuth.instance.currentUser?.uid, 
-    },
-  },
-);
-
+                          context.push(
+                            Routes.editChildPage,
+                            extra: {
+                              'childId': child.id,
+                              'childData': {
+                                ...child.data() as Map<String, dynamic>,
+                                'garden_id':
+                                    FirebaseAuth.instance.currentUser?.uid,
+                              },
+                            },
+                          );
                         },
                         child: Container(
                           decoration: BoxDecoration(

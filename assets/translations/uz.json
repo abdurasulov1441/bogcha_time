@@ -39,7 +39,18 @@
   "next": "Keyingi",
   "succes_send": "muvaffaqiyatli yuborildi",
   "enter_data": "Ma'lumotlarni kiriting",
-  "send": "Yuborish"
+  "send": "Yuborish",
+  "select_role": "Rolni tanlang",
+  "how_you_can_enter": "Siz kim sifatida tizimga kirasiz?",
+  "parent": "Ota-ona",
+  "staff": "Bog‘cha hodimi",
+
+  "enter_code": "Kodni kiriting",
+  "this_child_already_linked": "Bu bola allaqachon boshqa ota onaga bog'langan!"
+  
+
+
+
 
 
 

@@ -1,8 +1,9 @@
 import 'package:bogcha_time/app/router.dart';
+import 'package:bogcha_time/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,8 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     // 🔹 Проверяем кеш
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? uuid = prefs.getString('uuid');
+   
+    final String? uuid = cache.getString('parent_id');
 
     if (uuid != null) {
       // ✅ Если есть кеш → Родитель

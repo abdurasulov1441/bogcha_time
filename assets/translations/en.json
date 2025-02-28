@@ -39,6 +39,16 @@
   "next": "Next",
   "succes_send": "successfully sent",
   "enter_data": "Enter data",
-  "send": "Send"
+  "send": "Send",
+  "select_role": "Select role",
+  "how_you_can_enter": "How do you want to log in?",
+  "parent": "Parent",
+  "staff": "Kindergarten staff",
+
+  "enter_code": "Enter code",
+  "this_child_already_linked": "This child is already linked to another parent!"
+
+
+  
   
 }
