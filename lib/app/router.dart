@@ -1,6 +1,7 @@
 import 'package:bogcha_time/pages/auth/login_screen.dart';
 import 'package:bogcha_time/pages/garden/food/eat_add.dart';
 import 'package:bogcha_time/pages/garden/garden_main.dart';
+import 'package:bogcha_time/pages/garden/groups/children_list/edit_child_page.dart';
 import 'package:bogcha_time/pages/home_screen.dart';
 import 'package:bogcha_time/pages/parent/parent_main.dart';
 import 'package:bogcha_time/pages/select_role/instruction.dart';
@@ -28,6 +29,7 @@ abstract final class Routes {
   /////////////////////////////////////////////////////////////////////
 
   static const gardenPage = '/gardenPage';
+  static const editChildPage = '/editChildPage';
   static const eatingAddPage = '/eatingAddPage';
 
 
@@ -103,5 +105,16 @@ final router = GoRouter(
         return ParentsPage();
       },
     ),
+    GoRoute(
+  path: Routes.editChildPage,
+  builder: (context, state) {
+    final extra = state.extra as Map<String, dynamic>;
+    return EditChildScreen(
+      childId: extra['childId'],
+      childData: extra['childData'],
+    );
+  },
+),
+
   ],
 );

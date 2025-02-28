@@ -2,7 +2,7 @@ import 'package:bogcha_time/common/my_custom_widgets/my_custom_button.dart';
 import 'package:bogcha_time/common/my_custom_widgets/my_custom_container.dart';
 import 'package:bogcha_time/common/style/app_colors.dart';
 import 'package:bogcha_time/common/style/app_style.dart';
-import 'package:bogcha_time/pages/garden/groups/children_list_page.dart';
+import 'package:bogcha_time/pages/garden/groups/children_list/children_list_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
