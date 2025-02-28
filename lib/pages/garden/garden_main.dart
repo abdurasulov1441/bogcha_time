@@ -1,8 +1,8 @@
 import 'package:bogcha_time/common/style/app_colors.dart';
 import 'package:bogcha_time/pages/auth/account_screen.dart';
-import 'package:bogcha_time/pages/garden/children/groups_page.dart';
+import 'package:bogcha_time/pages/garden/activities/activities.dart';
+import 'package:bogcha_time/pages/garden/groups/groups_page.dart';
 import 'package:bogcha_time/pages/garden/food/eating.dart';
-import 'package:bogcha_time/pages/garden/home/garden.dart';
 import 'package:flutter/material.dart';
 
 class GardenPage extends StatefulWidget {
@@ -16,9 +16,9 @@ class _GardenPageState extends State<GardenPage> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    const HomeGarden(),
-    const EatingGarden(),
     const GroupsPage(),
+    const MealsPage(),
+    const ActivitiesGarden(),
     const AccountScreen(),
   ];
 
@@ -36,37 +36,61 @@ class _GardenPageState extends State<GardenPage> {
         index: _selectedIndex,
         children: _pages,
       ),
-
-
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.blue, 
-        unselectedItemColor: Colors.grey, 
-        showUnselectedLabels: true, 
-        type: BottomNavigationBarType.fixed, 
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home_rounded),
-            label: 'Home',
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.backgroundColor,
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                offset: const Offset(3, 3),
+                blurRadius: 6,
+              ),
+              BoxShadow(
+                color: Colors.white.withOpacity(0.7),
+                offset: const Offset(-3, -3),
+                blurRadius: 6,
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant_menu_rounded),
-            activeIcon: Icon(Icons.restaurant_rounded),
-            label: 'Eating',
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            child: BottomNavigationBar(
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              backgroundColor: AppColors.backgroundColor,
+              selectedItemColor: AppColors.defoltColor1,
+              unselectedItemColor: Colors.black45,
+              showUnselectedLabels: true,
+              type: BottomNavigationBarType.fixed,
+              elevation: 0,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.groups_outlined),
+                  activeIcon: Icon(Icons.groups_rounded),
+                  label: 'Guruhlar',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.fastfood_outlined),
+                  activeIcon: Icon(Icons.fastfood_rounded),
+                  label: 'Taomnoma',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.event_note_outlined),
+                  activeIcon: Icon(Icons.event_note_rounded),
+                  label: 'Mashg‘ulotlar',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle_outlined),
+                  activeIcon: Icon(Icons.account_circle_rounded),
+                  label: 'Profil',
+                ),
+              ],
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.photo_library_outlined),
-            activeIcon: Icon(Icons.photo_library_rounded),
-            label: 'Mashg‘ulotlar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline_rounded),
-            activeIcon: Icon(Icons.person_rounded),
-            label: 'Account',
-          ),
-        ],
+        ),
       ),
     );
   }

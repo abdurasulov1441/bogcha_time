@@ -1,8 +1,8 @@
 import 'package:bogcha_time/app/router.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,65 +13,40 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkUserRole();
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _handleNavigation());
   }
 
-  Future<void> _checkUserRole() async {
+  Future<void> _handleNavigation() async {
     final User? user = _auth.currentUser;
 
-    if (user == null) {
-      _navigateToSelectRole();
-      return;
+    if (user != null) {
+      // ✅ Если пользователь авторизован → Сад
+      return _navigateToGardenScreen();
     }
 
-    final String uid = user.uid;
+    // 🔹 Проверяем кеш
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? uuid = prefs.getString('uuid');
 
-    try {
-      // 🔹 1️⃣ Ota-onani farzand orqali tekshiramiz
-      final childrenQuery = await _firestore
-          .collection('children')
-          .where('parent_id', isEqualTo: uid)
-          .limit(1)
-          .get();
-
-      if (childrenQuery.docs.isNotEmpty) {
-        _navigateToParentScreen();
-        return;
-      }
-
-  
-      final gardenDoc = await _firestore.collection('garden').doc(uid).get();
-
-      if (gardenDoc.exists) {
-        _navigateToGardenScreen();
-        return;
-      }
-
-
-      _navigateToQRScan();
-    } catch (e) {
-      debugPrint('❌ Xatolik yuz berdi: $e');
-      _navigateToSelectRole();
+    if (uuid != null) {
+      // ✅ Если есть кеш → Родитель
+      return _navigateToParentScreen();
     }
-  }
 
-  void _navigateToParentScreen() {
-    if (mounted) context.go(Routes.parentsPage);
+    // ❌ Нет данных → Выбор роли
+    return _navigateToSelectRole();
   }
 
   void _navigateToGardenScreen() {
     if (mounted) context.go(Routes.gardenPage);
   }
 
-  void _navigateToQRScan() {
-    if (mounted) context.go(Routes.qrCodePage);
+  void _navigateToParentScreen() {
+    if (mounted) context.go(Routes.parentsPage);
   }
 
   void _navigateToSelectRole() {

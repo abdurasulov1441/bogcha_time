@@ -102,7 +102,7 @@ Future<void> callNumber(BuildContext context, String phoneNumber) async {
         });
       }
 
-      context.go(Routes.firebaseStream);
+      context.go(Routes.home);
     }
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found' || e.code == 'wrong-password') {

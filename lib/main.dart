@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:bogcha_time/app/app.dart';
 import 'package:bogcha_time/common/db/cache/cache.dart';
 import 'package:bogcha_time/common/db/cache/prefs_cache.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -57,3 +56,4 @@ Future<void> main() async {
     ),
   );
 }
+

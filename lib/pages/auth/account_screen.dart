@@ -20,7 +20,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
     await FirebaseAuth.instance.signOut();
 
-   context.go(Routes.firebaseStream);
+   context.go(Routes.home);
 
   
   }
