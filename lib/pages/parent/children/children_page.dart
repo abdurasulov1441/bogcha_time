@@ -1,19 +1,21 @@
+import 'package:bogcha_time/app/router.dart';
 import 'package:bogcha_time/common/style/app_colors.dart';
 import 'package:bogcha_time/common/style/app_style.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ParentsPage extends StatefulWidget {
-  const ParentsPage({super.key});
+class ChildrenPage extends StatefulWidget {
+  const ChildrenPage({super.key});
 
   @override
   _ParentsPageState createState() => _ParentsPageState();
 }
 
-class _ParentsPageState extends State<ParentsPage> {
+class _ParentsPageState extends State<ChildrenPage> {
   String? _parentId;
-  List<String> _linkedChildren = [];
+  String? _gardenId; // ✅ Bog‘cha ID ni olish uchun o‘zgaruvchi
   bool _isLoading = true;
 
   @override
@@ -25,8 +27,9 @@ class _ParentsPageState extends State<ParentsPage> {
   Future<void> _loadParentData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? parentId = prefs.getString('parent_id');
+    String? gardenId = prefs.getString('garden_id'); // ✅ Bog‘cha ID-ni olish
 
-    if (parentId == null) {
+    if (parentId == null || gardenId == null) {
       setState(() {
         _isLoading = false;
       });
@@ -35,54 +38,37 @@ class _ParentsPageState extends State<ParentsPage> {
 
     setState(() {
       _parentId = parentId;
+      _gardenId = gardenId;
+      _isLoading = false;
     });
-
-    try {
-      DocumentSnapshot parentDoc = await FirebaseFirestore.instance
-          .collection('parents')
-          .doc(parentId)
-          .get();
-
-      if (parentDoc.exists) {
-        Map<String, dynamic> parentData = parentDoc.data() as Map<String, dynamic>;
-        List<String> children = List<String>.from(parentData['linked_children'] ?? []);
-
-        setState(() {
-          _linkedChildren = children;
-          _isLoading = false;
-        });
-      } else {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      print("❌ Xatolik: $e");
-    }
   }
 
-  Future<DocumentSnapshot?> _getChildData(String childId) async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? gardenId = prefs.getString('garden_id');
+  /// ✅ **Real vaqtda bog‘langan bolalar ro‘yxatini olish**
+  Stream<List<String>> _linkedChildrenStream() {
+    if (_parentId == null) return const Stream.empty();
 
-      if (gardenId == null) return null;
+    return FirebaseFirestore.instance
+        .collection('parents')
+        .doc(_parentId)
+        .snapshots()
+        .map((snapshot) {
+      if (!snapshot.exists || snapshot.data() == null) return [];
+      Map<String, dynamic> data = snapshot.data()!;
+      return List<String>.from(data['linked_children'] ?? []);
+    });
+  }
 
-      DocumentSnapshot childDoc = await FirebaseFirestore.instance
-          .collection('garden')
-          .doc(gardenId)
-          .collection('children')
-          .doc(childId)
-          .get();
+  /// ✅ **Real vaqtda bolalar ma’lumotlarini olish**
+  Stream<DocumentSnapshot?> _getChildData(String childId) {
+    if (_gardenId == null) return const Stream.empty();
 
-      return childDoc.exists ? childDoc : null;
-    } catch (e) {
-      print("❌ Xatolik: $e");
-      return null;
-    }
+    return FirebaseFirestore.instance
+        .collection('garden')
+        .doc(_gardenId)
+        .collection('children')
+        .doc(childId)
+        .snapshots()
+        .map((snapshot) => snapshot.exists ? snapshot : null);
   }
 
   @override
@@ -90,19 +76,36 @@ class _ParentsPageState extends State<ParentsPage> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('Ota-ona Sahifasi'),
         backgroundColor: AppColors.defoltColor1,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => context.push(Routes.addChildPage),
+          ),
+        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : _linkedChildren.isEmpty
-              ? const Center(child: Text("Sizga bog‘langan bolalar yo‘q!"))
-              : ListView.builder(
+          : StreamBuilder<List<String>>(
+              stream: _linkedChildrenStream(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                List<String> linkedChildren = snapshot.data!;
+                if (linkedChildren.isEmpty) {
+                  return const Center(child: Text("Sizga bog‘langan bolalar yo‘q!"));
+                }
+
+                return ListView.builder(
                   padding: const EdgeInsets.all(10),
-                  itemCount: _linkedChildren.length,
+                  itemCount: linkedChildren.length,
                   itemBuilder: (context, index) {
-                    return FutureBuilder<DocumentSnapshot?>(
-                      future: _getChildData(_linkedChildren[index]),
+                    return StreamBuilder<DocumentSnapshot?>(
+                      stream: _getChildData(linkedChildren[index]),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
                           return const ListTile(
@@ -145,7 +148,9 @@ class _ParentsPageState extends State<ParentsPage> {
                       },
                     );
                   },
-                ),
+                );
+              },
+            ),
     );
   }
 }

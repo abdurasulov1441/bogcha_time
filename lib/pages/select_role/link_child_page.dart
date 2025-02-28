@@ -96,7 +96,7 @@ class _LinkChildPageState extends State<LinkChildPage> {
           'parent_name': "Ismingizni kiriting",
           'parent_surname': "Familiyangizni kiriting",
           'parent_phone': "Telefon raqam",
-          'fcm_token': fcmToken,
+          'fcm_tokens': [fcmToken], // 🔹 Создаем массив токенов
           'linked_children': [childId],
           'created_at': FieldValue.serverTimestamp(),
         });
@@ -106,8 +106,25 @@ class _LinkChildPageState extends State<LinkChildPage> {
       } else {
         // ✅ Если `parent_id` уже есть, добавляем ребенка в `linked_children`
         DocumentReference parentRef = firestore.collection('parents').doc(parentId);
+
+        DocumentSnapshot parentDoc = await parentRef.get();
+        List<String> existingTokens = [];
+
+        // ✅ Проверяем, существует ли `fcm_tokens`
+        if (parentDoc.exists && parentDoc.data() != null) {
+          var data = parentDoc.data() as Map<String, dynamic>;
+          if (data.containsKey("fcm_tokens")) {
+            existingTokens = List<String>.from(data["fcm_tokens"]);
+          }
+        }
+
+        if (!existingTokens.contains(fcmToken)) {
+          existingTokens.add(fcmToken!);
+        }
+
         await parentRef.update({
           'linked_children': FieldValue.arrayUnion([childId]),
+          'fcm_tokens': existingTokens, // 🔹 Обновляем список FCM-токенов
         });
       }
 

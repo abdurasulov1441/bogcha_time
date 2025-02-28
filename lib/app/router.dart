@@ -4,7 +4,8 @@ import 'package:bogcha_time/pages/garden/food/eat_edit.dart';
 import 'package:bogcha_time/pages/garden/garden_main.dart';
 import 'package:bogcha_time/pages/garden/groups/children_list/edit_child_page.dart';
 import 'package:bogcha_time/pages/home_screen.dart';
-import 'package:bogcha_time/pages/parent/parent_main.dart';
+import 'package:bogcha_time/pages/parent/children/add_child.dart';
+import 'package:bogcha_time/pages/parent/parent_home.dart';
 import 'package:bogcha_time/pages/select_role/instruction.dart';
 import 'package:bogcha_time/pages/select_role/link_child_page.dart';
 import 'package:bogcha_time/pages/select_role/qr_code.dart';
@@ -36,6 +37,7 @@ abstract final class Routes {
   /////////////////////////////////////////////////////////////////////
 
   static const parentsPage = '/parentsPage';
+  static const addChildPage = '/addChildPage';
 }
 
 String _initialLocation() {
@@ -124,8 +126,15 @@ final router = GoRouter(
           mealId: extra['mealId'],
           mealName: extra['mealName'],
           mealTime: extra['mealTime'],
-          mealImage: extra['mealImage'], mealType: extra['mealType'],
+          mealImage: extra['mealImage'],
+          mealType: extra['mealType'],
         );
+      },
+    ),
+    GoRoute(
+      path: Routes.addChildPage,
+      builder: (context, state) {
+        return AddChildQRPage();
       },
     ),
   ],

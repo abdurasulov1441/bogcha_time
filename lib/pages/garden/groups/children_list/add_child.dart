@@ -145,16 +145,19 @@ class _AddChildScreenState extends State<AddChildScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   NeumorphicTextField(
+                    isEmailvalidator: false,
                     hintText: 'Имя ребенка',
                     controller: _nameController,
                   ),
                   SizedBox(height: 20),
                   NeumorphicTextField(
+                    isEmailvalidator: false,
                     hintText: 'Фамилия ребенка',
                     controller: _surnameController,
                   ),
                   SizedBox(height: 20),
                   NeumorphicTextField(
+                    isEmailvalidator: false,
                     hintText: 'Отчество ребенка',
                     controller: _lastNameController,
                   ),

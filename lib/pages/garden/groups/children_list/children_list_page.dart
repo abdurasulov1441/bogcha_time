@@ -409,33 +409,70 @@ class ChildrenListPage extends StatelessWidget {
     );
   }
 
-  void _deleteChild(
-    BuildContext context,
-    String gardenId,
-    String childId,
-  ) async {
-    bool confirmDelete = await _showDeleteConfirmationDialog(context);
-    if (!confirmDelete) return;
+ void _deleteChild(
+  BuildContext context,
+  String gardenId,
+  String childId,
+) async {
+  bool confirmDelete = await _showDeleteConfirmationDialog(context);
+  if (!confirmDelete) return;
 
-    try {
-      await FirebaseFirestore.instance
-          .collection('garden')
-          .doc(gardenId)
-          .collection('children')
-          .doc(childId)
-          .delete();
+  try {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      Navigator.pop(context);
+    // 🔹 1. Bola ma’lumotlarini olish
+    DocumentSnapshot childDoc = await firestore
+        .collection('garden')
+        .doc(gardenId)
+        .collection('children')
+        .doc(childId)
+        .get();
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Ребенок успешно удален")));
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Ошибка при удалении: $e")));
+    if (!childDoc.exists) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("❌ Xatolik: Bola topilmadi!")),
+      );
+      return;
     }
+
+    // 🔹 2. Ota-onani aniqlash va bolalar ro‘yxatidan olib tashlash
+    Map<String, dynamic> childData = childDoc.data() as Map<String, dynamic>;
+    String? parentId = childData['parent_id'];
+
+    if (parentId != null) {
+      DocumentReference parentRef = firestore.collection('parents').doc(parentId);
+      DocumentSnapshot parentDoc = await parentRef.get();
+
+      if (parentDoc.exists) {
+        Map<String, dynamic> parentData = parentDoc.data() as Map<String, dynamic>;
+        List<dynamic> linkedChildren = List<dynamic>.from(parentData['linked_children'] ?? []);
+
+        // 🔹 3. Ota-ona profilidan bolani olib tashlash
+        linkedChildren.remove(childId);
+        await parentRef.update({'linked_children': linkedChildren});
+
+        // ✅ Agar ota-onada boshqa bola qolmasa, ota-ona hujjatini o‘chirib tashlash
+        if (linkedChildren.isEmpty) {
+          await parentRef.delete();
+        }
+      }
+    }
+
+    // 🔹 4. Bolani Firestore'dan o‘chirish
+    await firestore.collection('garden').doc(gardenId).collection('children').doc(childId).delete();
+
+    // 🔹 5. UI yangilash va xabar chiqarish
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("✅ Bola muvaffaqiyatli o‘chirildi!")),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("❌ Xatolik: $e")),
+    );
   }
+}
+
 
   Future<bool> _showDeleteConfirmationDialog(BuildContext context) async {
     return await showDialog<bool>(
