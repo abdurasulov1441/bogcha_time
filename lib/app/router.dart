@@ -1,5 +1,6 @@
 import 'package:bogcha_time/pages/auth/login_screen.dart';
 import 'package:bogcha_time/pages/garden/food/eat_add.dart';
+import 'package:bogcha_time/pages/garden/food/eat_edit.dart';
 import 'package:bogcha_time/pages/garden/garden_main.dart';
 import 'package:bogcha_time/pages/garden/groups/children_list/edit_child_page.dart';
 import 'package:bogcha_time/pages/home_screen.dart';
@@ -13,14 +14,13 @@ import 'package:go_router/go_router.dart';
 abstract final class Routes {
   /////////////////////////////////////////////////////////////////////
   static const home = '/home';
-  
+
   static const loginPage = '/loginPage';
   static const resetPasswordPage = '/resetPasswordPage';
 
   static const linkChildPage = '/linkChildPage';
   static const qrCodePage = '/qrCodePage';
   static const qrInstruction = '/qrInstruction';
-
 
   static const smsVerify = '/smsVerify';
 
@@ -31,7 +31,7 @@ abstract final class Routes {
   static const gardenPage = '/gardenPage';
   static const editChildPage = '/editChildPage';
   static const eatingAddPage = '/eatingAddPage';
-
+  static const editMealPage = '/editMealPage';
 
   /////////////////////////////////////////////////////////////////////
 
@@ -74,7 +74,7 @@ final router = GoRouter(
         return LinkChildPage();
       },
     ),
-     GoRoute(
+    GoRoute(
       path: Routes.qrCodePage,
       builder: (context, state) {
         return QRScanScreen();
@@ -98,7 +98,7 @@ final router = GoRouter(
         return MealAddPage();
       },
     ),
-    
+
     GoRoute(
       path: Routes.parentsPage,
       builder: (context, state) {
@@ -106,15 +106,27 @@ final router = GoRouter(
       },
     ),
     GoRoute(
-  path: Routes.editChildPage,
-  builder: (context, state) {
-    final extra = state.extra as Map<String, dynamic>;
-    return EditChildScreen(
-      childId: extra['childId'],
-      childData: extra['childData'],
-    );
-  },
-),
+      path: Routes.editChildPage,
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return EditChildScreen(
+          childId: extra['childId'],
+          childData: extra['childData'],
+        );
+      },
+    ),
 
+    GoRoute(
+      path: Routes.editMealPage,
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return EditMealScreen(
+          mealId: extra['mealId'],
+          mealName: extra['mealName'],
+          mealTime: extra['mealTime'],
+          mealImage: extra['mealImage'], mealType: extra['mealType'],
+        );
+      },
+    ),
   ],
 );

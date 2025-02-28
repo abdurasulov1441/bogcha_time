@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:bogcha_time/common/my_custom_widgets/my_custom_button.dart';
-import 'package:bogcha_time/common/my_custom_widgets/my_custom_container.dart';
-import 'package:bogcha_time/common/my_custom_widgets/my_custom_radio.dart';
 import 'package:bogcha_time/common/my_custom_widgets/my_custom_textfield.dart';
 import 'package:bogcha_time/common/style/app_colors.dart';
 import 'package:bogcha_time/common/style/app_style.dart';
@@ -28,7 +26,6 @@ class _AddChildScreenState extends State<AddChildScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _birthdateController = TextEditingController();
   String? _selectedGender;
-  bool _isLoading = false;
   File? _selectedImage;
 
   final _formKey = GlobalKey<FormState>();
@@ -66,7 +63,6 @@ class _AddChildScreenState extends State<AddChildScreen> {
     if (!_formKey.currentState!.validate() || _selectedGender == null) return;
 
     setState(() {
-      _isLoading = true;
     });
 
     try {
@@ -107,7 +103,6 @@ class _AddChildScreenState extends State<AddChildScreen> {
       ).showSnackBar(SnackBar(content: Text('Ошибка: $e')));
     } finally {
       setState(() {
-        _isLoading = false;
       });
     }
   }

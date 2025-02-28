@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bogcha_time/common/language/language_select_page.dart';
 import 'package:bogcha_time/common/my_custom_widgets/my_custom_avatar.dart';
 import 'package:bogcha_time/common/my_custom_widgets/my_custom_button.dart';

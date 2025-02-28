@@ -28,7 +28,6 @@ class _EditChildScreenState extends State<EditChildScreen> {
   final TextEditingController _birthdateController = TextEditingController();
   String? _selectedGender;
   File? _newImage;
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -50,7 +49,6 @@ class _EditChildScreenState extends State<EditChildScreen> {
 
   Future<void> _updateChildData() async {
     setState(() {
-      _isLoading = true;
     });
 
     try {
@@ -79,7 +77,6 @@ class _EditChildScreenState extends State<EditChildScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Ошибка: $e")));
     } finally {
       setState(() {
-        _isLoading = false;
       });
     }
   }
