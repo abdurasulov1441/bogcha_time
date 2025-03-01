@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:video_player/video_player.dart';
 
 class GardenActivitiesPage extends StatefulWidget {
@@ -19,7 +18,6 @@ class _GardenActivitiesPageState extends State<GardenActivitiesPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Map<String, VideoPlayerController> _videoControllers = {};
-  final String _today = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   /// 🔹 Получение `gardenId`
   String? _getGardenId() {
