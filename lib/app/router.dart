@@ -1,4 +1,5 @@
 import 'package:bogcha_time/pages/auth/login_screen.dart';
+import 'package:bogcha_time/pages/garden/activities/add_activities.dart';
 import 'package:bogcha_time/pages/garden/food/eat_add.dart';
 import 'package:bogcha_time/pages/garden/food/eat_edit.dart';
 import 'package:bogcha_time/pages/garden/garden_main.dart';
@@ -33,6 +34,8 @@ abstract final class Routes {
   static const editChildPage = '/editChildPage';
   static const eatingAddPage = '/eatingAddPage';
   static const editMealPage = '/editMealPage';
+  static const gardenAddAcitivitiesPage = '/gardenAddAcitivitiesPage';
+
 
   /////////////////////////////////////////////////////////////////////
 
@@ -135,6 +138,12 @@ final router = GoRouter(
       path: Routes.addChildPage,
       builder: (context, state) {
         return AddChildQRPage();
+      },
+    ),
+     GoRoute(
+      path: Routes.gardenAddAcitivitiesPage,
+      builder: (context, state) {
+        return AddActivityPage();
       },
     ),
   ],

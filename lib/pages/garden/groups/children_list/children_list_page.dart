@@ -202,7 +202,7 @@ class ChildrenListPage extends StatelessWidget {
   }
 
  void _showQRCode(BuildContext context, String gardenId, String uniqueCode) {
-  // ✅ Формируем JSON-объект с `garden_id` и `unique_code`
+
   String qrData = jsonEncode({
     "garden_id": gardenId,
     "unique_code": uniqueCode,
@@ -222,17 +222,17 @@ class ChildrenListPage extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              "QR-kod bolaga",
+              "Bola QR-kodi",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
 
-            // ✅ Генерация QR-кода с JSON-данными
+          
             Container(
               width: 200,
               height: 200,
               child: PrettyQrView.data(
-                data: qrData, // Передаем JSON-строку
+                data: qrData, 
                 errorCorrectLevel: QrErrorCorrectLevel.H,
                 decoration: const PrettyQrDecoration(
                   shape: PrettyQrSmoothSymbol(color: Colors.black),
@@ -242,15 +242,8 @@ class ChildrenListPage extends StatelessWidget {
 
             const SizedBox(height: 10),
 
-            // ✅ Отображение JSON-строки для проверки
-            SelectableText(
-              qrData,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 20),
+          
+           
           ],
         ),
       );
@@ -258,156 +251,197 @@ class ChildrenListPage extends StatelessWidget {
   );
 }
 
-  void _showChildDetails(BuildContext context, DocumentSnapshot child) {
-    final String? gardenId = FirebaseAuth.instance.currentUser?.uid;
-    if (gardenId == null) return;
+void _showChildDetails(BuildContext context, DocumentSnapshot child) {
+  final String? gardenId = FirebaseAuth.instance.currentUser?.uid;
+  if (gardenId == null) return;
 
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      backgroundColor: AppColors.backgroundColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Stack(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.backgroundColor,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            offset: const Offset(4, 4),
-                            blurRadius: 6,
-                          ),
-                          BoxShadow(
-                            color: Colors.white.withOpacity(0.7),
-                            offset: const Offset(-4, -4),
-                            blurRadius: 6,
-                          ),
-                        ],
+  showModalBottomSheet(
+    isScrollControlled: true,
+    context: context,
+    backgroundColor: Colors.transparent,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+    ),
+    builder: (context) {
+      return Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.backgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              offset: const Offset(3, 3),
+              blurRadius: 6,
+            ),
+            BoxShadow(
+              color: Colors.white.withOpacity(0.8),
+              offset: const Offset(-3, -3),
+              blurRadius: 6,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // 📌 **Аватар ребенка с редактированием**
+            Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.backgroundColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        offset: const Offset(4, 4),
+                        blurRadius: 6,
                       ),
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage:
-                            child['child_photo'].isNotEmpty
-                                ? NetworkImage(child['child_photo'])
-                                : null,
-                        child:
-                            child['child_photo'].isEmpty
-                                ? const Icon(Icons.person, size: 50)
-                                : null,
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.7),
+                        offset: const Offset(-4, -4),
+                        blurRadius: 6,
                       ),
-                    ),
+                    ],
+                  ),
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: child['child_photo'].isNotEmpty
+                        ? NetworkImage(child['child_photo'])
+                        : null,
+                    child: child['child_photo'].isEmpty
+                        ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                        : null,
+                  ),
+                ),
 
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: GestureDetector(
-                        onTap: () {
-                          context.pop();
-                          context.push(
-                            Routes.editChildPage,
-                            extra: {
-                              'childId': child.id,
-                              'childData': {
-                                ...child.data() as Map<String, dynamic>,
-                                'garden_id':
-                                    FirebaseAuth.instance.currentUser?.uid,
-                              },
-                            },
-                          );
+                // 🔹 **Кнопка редактирования**
+                GestureDetector(
+                  onTap: () {
+                    context.pop();
+                    context.push(
+                      Routes.editChildPage,
+                      extra: {
+                        'childId': child.id,
+                        'childData': {
+                          ...child.data() as Map<String, dynamic>,
+                          'garden_id': gardenId,
                         },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.defoltColor1,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                offset: const Offset(2, 2),
-                                blurRadius: 4,
-                              ),
-                              BoxShadow(
-                                color: Colors.white.withOpacity(0.6),
-                                offset: const Offset(-2, -2),
-                                blurRadius: 4,
-                              ),
-                            ],
-                          ),
-                          padding: const EdgeInsets.all(6),
-                          child: const Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                            size: 18,
-                          ),
+                      },
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.defoltColor1,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          offset: const Offset(2, 2),
+                          blurRadius: 4,
                         ),
-                      ),
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.6),
+                          offset: const Offset(-2, -2),
+                          blurRadius: 4,
+                        ),
+                      ],
                     ),
-                  ],
+                    padding: const EdgeInsets.all(6),
+                    child: const Icon(Icons.edit, color: Colors.white, size: 18),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 15),
+              ],
+            ),
 
-              Center(
+            const SizedBox(height: 15),
+
+            // 📌 **Заголовок**
+            Text(
+              "Ma'lumotlar haqida",
+              style: AppStyle.fontStyle.copyWith(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 15),
+
+            // 📌 **Информация ребенка**
+            _infoCard("👦 Ism", child['child_name']),
+            _infoCard("📛 Familiya", child['child_surname']),
+            _infoCard("📅 Tug‘ilgan sana", child['child_birthdate'] ?? "Noma’lum"),
+            _infoCard("🚻 Jinsi", child['child_gender'] == "1" ? "O‘g‘il bola" : "Qiz bola"),
+
+            const SizedBox(height: 20),
+
+           
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.defoltColor5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 5,
+              ),
+              onPressed: () => _deleteChild(context, gardenId, child.id),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 child: Text(
-                  "Информация о ребенке",
-                  style: AppStyle.fontStyle.copyWith(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  "Bolani o‘chirish",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
-              const SizedBox(height: 15),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
 
-              _infoRow("Имя", child['child_name']),
-              Divider(color: Colors.grey),
-              _infoRow("Фамилия", child['child_surname']),
-              Divider(color: Colors.grey),
-              _infoRow("Фамилия", child['child_last_name']),
-              Divider(color: Colors.grey),
-              _infoRow(
-                "Дата рождения",
-                (child['child_birthdate'] ?? "Не указано").toString(),
-              ),
-              Divider(color: Colors.grey),
-              _infoRow("Пол", child['child_gender']),
-              Divider(color: Colors.grey),
 
-              const SizedBox(height: 20),
-
-              Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 5,
-                  ),
-                  onPressed: () => _deleteChild(context, gardenId, child.id),
-                  child: const Text(
-                    "Удалить ребенка",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-            ],
+Widget _infoCard(String title, String value) {
+  return Container(
+    margin: const EdgeInsets.symmetric(vertical: 8),
+    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+    decoration: BoxDecoration(
+      color: AppColors.backgroundColor,
+      borderRadius: BorderRadius.circular(15),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          offset: const Offset(3, 3),
+          blurRadius: 5,
+        ),
+        BoxShadow(
+          color: Colors.white.withOpacity(0.8),
+          offset: const Offset(-3, -3),
+          blurRadius: 5,
+        ),
+      ],
+    ),
+    child: Row(
+      children: [
+        Text(
+          title,
+          style: AppStyle.fontStyle.copyWith(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
           ),
-        );
-      },
-    );
-  }
+        ),
+        const Spacer(),
+        Text(
+          value,
+          style: AppStyle.fontStyle.copyWith(fontSize: 16),
+        ),
+      ],
+    ),
+  );
+}
 
  void _deleteChild(
   BuildContext context,
@@ -420,7 +454,7 @@ class ChildrenListPage extends StatelessWidget {
   try {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-    // 🔹 1. Bola ma’lumotlarini olish
+
     DocumentSnapshot childDoc = await firestore
         .collection('garden')
         .doc(gardenId)
@@ -435,7 +469,7 @@ class ChildrenListPage extends StatelessWidget {
       return;
     }
 
-    // 🔹 2. Ota-onani aniqlash va bolalar ro‘yxatidan olib tashlash
+
     Map<String, dynamic> childData = childDoc.data() as Map<String, dynamic>;
     String? parentId = childData['parent_id'];
 
@@ -451,17 +485,17 @@ class ChildrenListPage extends StatelessWidget {
         linkedChildren.remove(childId);
         await parentRef.update({'linked_children': linkedChildren});
 
-        // ✅ Agar ota-onada boshqa bola qolmasa, ota-ona hujjatini o‘chirib tashlash
+
         if (linkedChildren.isEmpty) {
           await parentRef.delete();
         }
       }
     }
 
-    // 🔹 4. Bolani Firestore'dan o‘chirish
+  
     await firestore.collection('garden').doc(gardenId).collection('children').doc(childId).delete();
 
-    // 🔹 5. UI yangilash va xabar chiqarish
+
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("✅ Bola muvaffaqiyatli o‘chirildi!")),
@@ -501,30 +535,58 @@ class ChildrenListPage extends StatelessWidget {
         false;
   }
 
-  /// 🔹 Функция для смены группы ребенка
-  void _changeGroup(BuildContext context, String childId) {
-    final String? gardenId = FirebaseAuth.instance.currentUser?.uid;
-    if (gardenId == null) return;
 
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return StreamBuilder<QuerySnapshot>(
-          stream:
-              FirebaseFirestore.instance
+void _changeGroup(BuildContext context, String childId) {
+  final String? gardenId = FirebaseAuth.instance.currentUser?.uid;
+  if (gardenId == null) return;
+
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+    ),
+    builder: (context) {
+      return Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.backgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              offset: const Offset(3, 3),
+              blurRadius: 5,
+            ),
+            BoxShadow(
+              color: Colors.white.withOpacity(0.8),
+              offset: const Offset(-3, -3),
+              blurRadius: 5,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Guruhni tanlang",
+              style: AppStyle.fontStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
                   .collection('garden')
                   .doc(gardenId)
                   .collection('groups')
                   .snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData)
-              return const Center(child: CircularProgressIndicator());
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-            return ListView(
-              children:
-                  snapshot.data!.docs.map((doc) {
-                    return ListTile(
-                      title: Text(doc['group_name']),
+                return Column(
+                  children: snapshot.data!.docs.map((doc) {
+                    return GestureDetector(
                       onTap: () async {
                         await FirebaseFirestore.instance
                             .collection('garden')
@@ -534,38 +596,48 @@ class ChildrenListPage extends StatelessWidget {
                             .update({'group_id': doc.id});
                         Navigator.pop(context);
                       },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: AppColors.backgroundColor,
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              offset: const Offset(3, 3),
+                              blurRadius: 5,
+                            ),
+                            BoxShadow(
+                              color: Colors.white.withOpacity(0.8),
+                              offset: const Offset(-3, -3),
+                              blurRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                             Icon(Icons.group, color: AppColors.defoltColor1),
+                            const SizedBox(width: 10),
+                            Text(
+                              doc['group_name'],
+                              style: AppStyle.fontStyle.copyWith(fontSize: 16),
+                            ),
+                            const Spacer(),
+                            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+                          ],
+                        ),
+                      ),
                     );
                   }).toList(),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _infoRow(String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        children: [
-          Text(
-            title,
-            style: AppStyle.fontStyle.copyWith(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+                );
+              },
             ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              value,
-              style: AppStyle.fontStyle.copyWith(fontSize: 16),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
+    },
+  );
+}
+ 
 }

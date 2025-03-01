@@ -178,7 +178,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                     children: [
                       Expanded(
                         child: RadioListTile<String>(
-                          fillColor: MaterialStateProperty.all(
+                          fillColor: WidgetStateProperty.all(
                             AppColors.defoltColor1,
                           ),
                           title: Text("Мальчик", style: AppStyle.fontStyle),
@@ -193,7 +193,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                       ),
                       Expanded(
                         child: RadioListTile<String>(
-                          fillColor: MaterialStateProperty.all(
+                          fillColor: WidgetStateProperty.all(
                             AppColors.defoltColor1,
                           ),
                           title: Text("Девочка", style: AppStyle.fontStyle),

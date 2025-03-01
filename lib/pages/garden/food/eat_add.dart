@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'package:bogcha_time/common/style/app_colors.dart';
+import 'package:bogcha_time/common/style/app_style.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
@@ -32,7 +35,7 @@ class _MealAddPageState extends State<MealAddPage> {
     super.dispose();
   }
 
-  /// 🔹 Выбор изображения (камера/галерея)
+
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await ImagePicker().pickImage(source: source, imageQuality: 80);
     if (pickedFile != null) {
@@ -42,7 +45,7 @@ class _MealAddPageState extends State<MealAddPage> {
     }
   }
 
-  /// 🔹 Загрузка изображения в **Firebase Storage** и получение URL
+
   Future<String?> _uploadPhoto(String mealUuid) async {
     if (_selectedImage == null) return null;
 
@@ -52,14 +55,14 @@ class _MealAddPageState extends State<MealAddPage> {
 
       final storageRef = _storage.ref().child('meals/$gardenId/$mealUuid.jpg');
       await storageRef.putFile(_selectedImage!);
-      return await storageRef.getDownloadURL(); // 📌 Получаем ссылку на загруженный файл
+      return await storageRef.getDownloadURL(); 
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Ошибка загрузки: $e")));
       return null;
     }
   }
 
-  /// 🔹 Добавление еды в Firestore
+
   Future<void> _addMeal() async {
     if (_nameController.text.isEmpty || _timeController.text.isEmpty || _selectedMealType == null) return;
 
@@ -74,7 +77,7 @@ class _MealAddPageState extends State<MealAddPage> {
       final String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
       final String mealUuid = const Uuid().v4().substring(0, 8);
 
-      // 📌 Загружаем фото в Firebase Storage
+  
       String? photoUrl = await _uploadPhoto(mealUuid);
 
       await _firestore
@@ -88,7 +91,7 @@ class _MealAddPageState extends State<MealAddPage> {
         'name': _nameController.text.trim(),
         'time': _timeController.text.trim(),
         'type': _selectedMealType,
-        'image': photoUrl ?? '', // 📌 URL фото в Storage
+        'image': photoUrl ?? '',
         'created_at': FieldValue.serverTimestamp(),
       });
 
@@ -106,7 +109,14 @@ class _MealAddPageState extends State<MealAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Добавить еду")),
+      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        leading: IconButton(onPressed: (){
+          context.pop();
+        }, icon: Icon(Icons.arrow_back, )),
+        backgroundColor: AppColors.backgroundColor,
+        
+        title:  Text("Добавить еду")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -114,45 +124,30 @@ class _MealAddPageState extends State<MealAddPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text("Выберите тип приема пищи", style: TextStyle(fontWeight: FontWeight.bold)),
-              DropdownButton<String>(
-                value: _selectedMealType,
-                isExpanded: true,
-                hint: const Text("Выберите"),
-                items: ["Завтрак", "Обед", "Полдник"].map((String type) {
-                  return DropdownMenuItem<String>(value: type, child: Text(type));
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedMealType = value;
-                  });
-                },
-              ),
+             _buildNeumorphicDropdown(),
               const SizedBox(height: 15),
-              _buildTextField(_nameController, "Название блюда"),
-              _buildTextField(_timeController, "Время подачи (чч:мм)"),
+              _buildNeumorphicTextField(_nameController, "Название блюда"),
+_buildNeumorphicTextField(_timeController, "Время подачи (чч:мм)"),
 
               const SizedBox(height: 15),
 
               Center(
                 child: Column(
                   children: [
-                    if (_selectedImage != null)
-                      Image.file(_selectedImage!, width: 150, height: 150, fit: BoxFit.cover),
+                   _buildNeumorphicImage(),
                     const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ElevatedButton.icon(
-                          onPressed: () => _pickImage(ImageSource.camera),
-                          icon: const Icon(Icons.camera_alt),
-                          label: const Text("Сделать фото"),
-                        ),
-                        const SizedBox(width: 10),
-                        ElevatedButton.icon(
-                          onPressed: () => _pickImage(ImageSource.gallery),
-                          icon: const Icon(Icons.image),
-                          label: const Text("Выбрать фото"),
-                        ),
+                       _buildNeumorphicButton(
+                      text: "📷 Камера",
+                      onPressed: () => _pickImage(ImageSource.camera),
+                    ),
+                    const SizedBox(width: 10),
+                    _buildNeumorphicButton(
+                      text: "🖼 Галерея",
+                      onPressed: () => _pickImage(ImageSource.gallery),
+                    ),
                       ],
                     ),
                   ],
@@ -162,12 +157,10 @@ class _MealAddPageState extends State<MealAddPage> {
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _addMeal,
-                  child: _isLoading
-                      ? const CircularProgressIndicator()
-                      : const Text("Добавить еду"),
-                ),
+                child:_buildNeumorphicButton(
+  text: _isLoading ? "Загрузка..." : "Добавить еду",
+  onPressed: _isLoading ? () {} : _addMeal,
+),
               ),
             ],
           ),
@@ -176,14 +169,104 @@ class _MealAddPageState extends State<MealAddPage> {
     );
   }
 
-  /// 🔹 Поле ввода
-  Widget _buildTextField(TextEditingController controller, String label) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
+  Widget _buildNeumorphicTextField(TextEditingController controller, String label) {
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+    margin: const EdgeInsets.symmetric(vertical: 8),
+    decoration: BoxDecoration(
+      color: AppColors.backgroundColor,
+      borderRadius: BorderRadius.circular(15),
+      boxShadow: [
+        BoxShadow(color: Colors.black.withOpacity(0.1), offset: const Offset(3, 3), blurRadius: 5),
+        BoxShadow(color: Colors.white.withOpacity(0.8), offset: const Offset(-3, -3), blurRadius: 5),
+      ],
+    ),
+    child: TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: label,
+        border: InputBorder.none,
       ),
-    );
-  }
+    ),
+  );
+}
+Widget _buildNeumorphicDropdown() {
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+    margin: const EdgeInsets.symmetric(vertical: 8),
+    decoration: BoxDecoration(
+      color: AppColors.backgroundColor,
+      borderRadius: BorderRadius.circular(15),
+      boxShadow: [
+        BoxShadow(color: Colors.black.withOpacity(0.1), offset: const Offset(3, 3), blurRadius: 5),
+        BoxShadow(color: Colors.white.withOpacity(0.8), offset: const Offset(-3, -3), blurRadius: 5),
+      ],
+    ),
+    child: DropdownButtonHideUnderline(
+      child: DropdownButton<String>(
+        value: _selectedMealType,
+        isExpanded: true,
+        hint: const Text("Выберите"),
+        items: ["Завтрак", "Обед", "Полдник"].map((String type) {
+          return DropdownMenuItem<String>(
+            value: type,
+            child: Text(type),
+          );
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            _selectedMealType = value;
+          });
+        },
+      ),
+    ),
+  );
+}
+Widget _buildNeumorphicButton({required String text, required VoidCallback onPressed}) {
+  return GestureDetector(
+    onTap: onPressed,
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: AppColors.defoltColor1,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.2), offset: const Offset(3, 3), blurRadius: 5),
+          BoxShadow(color: Colors.white.withOpacity(0.8), offset: const Offset(-3, -3), blurRadius: 5),
+        ],
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: AppStyle.fontStyle.copyWith(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+Widget _buildNeumorphicImage() {
+  return Container(
+    padding: const EdgeInsets.all(10),
+    decoration: BoxDecoration(
+      color: AppColors.backgroundColor,
+      borderRadius: BorderRadius.circular(15),
+      boxShadow: [
+        BoxShadow(color: Colors.black.withOpacity(0.1), offset: const Offset(3, 3), blurRadius: 5),
+        BoxShadow(color: Colors.white.withOpacity(0.8), offset: const Offset(-3, -3), blurRadius: 5),
+      ],
+    ),
+    child: _selectedImage != null
+        ? ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.file(_selectedImage!, width: 150, height: 150, fit: BoxFit.cover),
+          )
+        : const Icon(Icons.image, size: 60, color: Colors.grey),
+  );
+}
+
 }
